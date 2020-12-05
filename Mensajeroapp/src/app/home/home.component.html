@@ -1,0 +1,28 @@
+<nav  class="navbar navbar-expand-lg navbar-dark sticky-top shadow">
+        <a class="navbar-brand" routerLinkActive="active" routerLink="/home" style="color:#FFFF;" >
+          <img class="rounded-circle" #logo src="../assets/logo.png" width="30" height="30" style="background-color: #FFFF">
+          Mensajeroapp
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse flex-row-reverse" id="navbarNav">
+          <ul class="navbar-nav" >
+            <li class="nav-item " routerLinkActive="active">
+              <a class="nav-link" style = "color: white;" routerLink="./mensajerobike">Conduce con tu moto</a>
+            </li>
+            <li class="nav-item" routerLinkActive="active">
+              <a class="nav-link" style = "color: white;" routerLink="./mensajerogo">Conduce con tu carro</a>
+            </li>
+            <li class="nav-item " routerLinkActive="active" >
+              <a class="nav-link" style = "color: white;" routerLink="./conoce-mensajero">Conoce Mensajero</a>
+            </li>
+            <li class="nav-item " routerLinkActive="active" >
+              <a class="nav-link" style = "color: white;" routerLink="/portal">Píde aquí</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div [@routeAnimation]="getAnimationData(routerOutlet)" id="container">
+          <router-outlet #routerOutlet="outlet" ></router-outlet>
+      </div>

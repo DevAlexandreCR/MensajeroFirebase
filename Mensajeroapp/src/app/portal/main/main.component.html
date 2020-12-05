@@ -1,0 +1,20 @@
+
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow" style="background: #2b96d3; padding-left: 10%; padding-right: 10%; min-width: 600px; max-width: 100%;">
+    <a class="navbar-brand" routerLinkActive="active" routerLink="../../home" style="color:#FFFF;" >
+    <img class="rounded-circle" src="../../../assets/logo.png" width="30" height="30" alt="" style="background-color: #FFFF">
+    Mensajeroapp
+    </a>
+    <button class="navbar-toggler "  *ngIf= "!islogin " type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon "></span>
+          </button>
+    <div class="collapse navbar-collapse flex-row-reverse" id="navbarNavAltMarkup">
+        <div class="navbar-nav ">
+        <a class="nav-item nav-link " *ngIf= "!islogin " style = "color: white;" routerLink="./registro">Registrarse</a>
+        <a class="nav-item nav-link" *ngIf= "!islogin "  style = "color: white;"  routerLink="./login">Iniciar Sesión</a>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid ">
+    <router-outlet ></router-outlet>
+</div>

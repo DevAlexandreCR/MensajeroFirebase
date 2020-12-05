@@ -1,0 +1,31 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../assets/bariol_bold.otf) format("opentype"); 
+}
+*{
+    font-family:bariol_bold;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: center;
+    font-family: bariol;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+  }
+
+  p{
+      color: rgba(0, 0, 0, 0.692);
+      font-size: 18px;
+  }
+
+  .card{
+      transition: transform .05s
+  }
+
+  .card:hover{
+      transform: scale(1.03)
+  }

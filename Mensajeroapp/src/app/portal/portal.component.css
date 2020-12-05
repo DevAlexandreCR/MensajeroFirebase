@@ -1,0 +1,11 @@
+.container-fluid{
+    background-color: yellowgreen
+}
+
+*{
+    font-family: bariol_bold
+}
+
+.container-fluid{
+    max-width: 100vw;
+}

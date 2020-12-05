@@ -1,0 +1,33 @@
+<nav class="navbar-brand-lg"></nav>
+  <!-- Sidebar -->
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="barra-lateral" id="sidebar-wrapper">
+      <div class="list-group list-group-flush">
+          <a class="list-group-item list-group-item-action " *ngIf= "es_empresa" style = "color: aqua;" routerLink="./perfil-empresa">{{empresa.nombre}} </a>
+          <a class="list-group-item list-group-item-action " *ngIf= "!es_empresa" style = "color: aqua;" routerLink="./perfil">{{usuario.nombre}} </a>
+        <a  class="list-group-item list-group-item-action " style = "color: aqua;" *ngIf= "es_empresa" routerLink="./inicio-empresas" active>Home</a>
+        <a  class="list-group-item list-group-item-action " style = "color: aqua;" *ngIf= "!es_empresa" routerLink="./inicio" active>Home</a>
+        <a  class="list-group-item list-group-item-action " style = "color: aqua;" routerLink="./historial">Historial</a>
+        <a  class="list-group-item list-group-item-action " style = "color: aqua;" (click)= "cerrarSesion()">Cerrar Sesion</a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <div class="container-fluid" id="page-content-wrapper" style="padding-bottom: 2%">
+        <router-outlet></router-outlet> 
+              </div>     
+  
+
+  </div>
+  <div class="navigation" style="background: #454545; padding-left: 10%; padding-right: 10%; min-width: 600px;">
+      <nav class="nav navbar navbar-expand-lg navbar-dark" style="height: 100%" >
+          <a class="flex-sm-fill text-sm-center nav-link active" *ngIf= "!es_empresa" routerLink="./inicio">Home</a>
+          <a class="flex-sm-fill text-sm-center nav-link active" *ngIf= "es_empresa" routerLink="./inicio-empresas">Home</a>
+          <a class="flex-sm-fill text-sm-center nav-link " *ngIf= "!es_empresa" routerLink="./perfil">Perfil</a>
+          <a class="flex-sm-fill text-sm-center nav-link " *ngIf= "es_empresa" routerLink="./perfil-empresa">Perfil</a>
+          <a class="flex-sm-fill text-sm-center nav-link" routerLink="./historial">Historial</a>
+          <a class="flex-sm-fill text-sm-center nav-link" routerLink="./login">Cerrar Sesion</a>
+        </nav> 
+  </div>

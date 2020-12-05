@@ -1,0 +1,11 @@
+    <color name="colorPrimary">#2b96d3</color>
+    <color name="colorPrimaryDark">#0068a1</color>
+    primarylight = #6cc6ff
+    <color name="colorAccent">#0d45ff</color>
+    <color name="colorFondo">#d3d3ff</color>
+    <color name="colorBlanco">#c5ffffff</color>
+    <color name="colornaranja">#fbc92a</color>
+
+    <div style="text-align: center">
+  <iframe width="50%" height="350px" src="https://www.youtube.com/embed/xGweIdRAS_w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>

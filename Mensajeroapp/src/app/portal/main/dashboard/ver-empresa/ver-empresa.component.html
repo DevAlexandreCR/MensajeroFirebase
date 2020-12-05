@@ -1,0 +1,142 @@
+<div class="portada container-fluid" id="portada" #portada style="background-image: url(../../../../../assets/portada-web.jpg)">
+  <div class="container">
+      <div class="div-banner-portada">
+        </div>
+    <div class="div-imagen">
+      <img [src]= "empresa.url_foto_perfil"  class="img img-thumbnail" alt="perfil"> 
+    </div>
+  </div>
+</div>
+<div class="container datos-empresa">
+  <div class="row">
+    <div class="col">
+        <h3 class="titulo">{{empresa.nombre}}</h3>
+        <p class="titulo">{{empresa.descripcion}}</p>
+    </div>
+<div class="col">
+  <br>
+    <p><strong>Hora de atención {{horario}}</strong></p>
+</div>
+  </div>        
+</div>
+<div class="container">
+    <div class="row" >
+        <div class="col" style="min-width: 400px; max-width: 500px;">
+         <h1>Carta</h1>
+         <ol class="list" *ngFor= "let ofert of all_ofertas" >
+           <li class="list-group-item list-group-item-action shadow" style="padding: 0ch; z-index: 'initial';">
+               <div class="row">                 
+                  <div class="col agregar" style="align-items: center; display: flex;" (click)="agregarAlCarrito(ofert)">
+                    <img [src]="ofert.url_foto_oferta" style="width: 100%; height: 100%" class="rounded" alt="imagen oferta" >
+                  </div>
+                  <div class="col-8" style="padding: 5px">
+                      <div class="row">
+                        <div class="col"><h5 class="card-title" style="color: crimson">{{ofert.titulo}}</h5></div>
+                        <div class="col-sm-2">                        
+                        </div>
+                      </div>
+                      <small>{{ofert.descripcion}}</small>
+                      <div class="row">
+                        <div class="col">
+                            <p style="bottom: 10px"><strong>${{ofert.precio}}</strong></p>
+                        </div>
+                        <div class="col">
+                            <div class="btn-group" style="float: right; margin: 10px">
+                                <button type="button" class="btn btn-light"(click)="agregarUno(ofert)">+</button>
+                                <input class="form-control bg-light" type="number" disabled style="width: 50px; text-align: center; border-width: 0;" [(ngModel)]="ofert.cantidad"/>
+                                <button type="button" class="btn btn-light" (click)="quitarUno(ofert)">-</button>
+                              </div>
+                        </div>
+                      </div>
+
+                  </div>
+                </div>
+           </li>
+         </ol>
+        </div>
+        <div class="col order-first order-md-4" style="min-width: 500px;">
+          <div class="container div-pedido shadow">
+            <br>
+            <h2 style="text-align: center;"><strong>Tu pedido</strong></h2>
+            <br>
+              <div class="form " style= "max-height: auto;">   
+                      <div class="form-group"  id= "dir_inicial_div">
+                          <label class="control-label">Comprar en:</label>
+                          <h2>{{empresa.nombre}}</h2>
+                        </div>          
+                        <div class="form-group">
+                            <label class="control-label">Resumen pedido: </label>
+                            <pre>{{carrito}}</pre>
+                            <hr>
+                            <pre>Valor pedido: ${{valor_pedido}}</pre>
+                            <pre>Valor domicilio: ${{valor_domicilio}}</pre>
+                            <hr>
+                            <pre><b>Valor total: ${{valor_domicilio + valor_pedido}}</b></pre>
+                            <input class="form-control form-control-sm" type="text" placeholder="*Personaliza aquí su pedido. ejemplo: 'Una limonada adicional'" [(ngModel)]="descripcion_domicilio"
+                            (keyup)= "verificarPedido(descripcion_domicilio)" />
+                          </div>
+                      <div class="container" style = "text-align: center;">
+                        <button type="button" *ngIf= "enviar_ok" class="btn btn-primary shadow" id="enviar" style= "width: 80%; height: 30%" (click)= "pedirDomicilio(empresa, usuario)"
+                        data-toggle="tooltip" data-placement="bottom" title="Solicita servicio">Solicitar</button>
+                        <button type="button" *ngIf= "!enviar_ok" class="btn btn-primary shadow" id="enviar-disabled" style= "width: 80%; height: 30%" disabled
+                        data-toggle="tooltip" data-placement="bottom" title="Solicita servicio">Solicitar</button>
+                        <div class="progress" *ngIf = "cancelar_envio" style="margin-top: 20px;">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressenviarservicio" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                        </div>
+                        <div> <small *ngIf = "cancelar_envio" style="color: red">Enviando servicio...</small></div>
+                        <button class="btn btn-danger shadow" *ngIf = "cancelar_envio" style= "width: 40%; height: auto" (click)= "CancelarEnvioServicio('progressenviarservicio')">Cancelar Envío</button>
+                        <div class= "container shadow" #gmap id= "gmap" style="width: 100%; height:200px; border-radius: 10px; margin-top: 15px; position: relative; z-index:1;"></div>
+                      </div>
+                      <br>
+                </div>
+          </div>
+          <div class="item">
+              <img class="img-circle" src="../../../../../assets/canasta_mensajero.png" id="canasta" data-toggle="modal" data-target="#conf-pedido-modal"/>
+              <!-- badge -->
+                  <span class="notify-badge" *ngIf="ofertasSeleccionadas.length > 0">{{ofertasSeleccionadas.length}}</span>
+          </div>
+        </div>
+      </div>
+</div>
+<!--********************************** modal para confirmar domicilio****************************-->
+<div class="modal fade"  id="conf-pedido-modal" *ngIf="ofertasSeleccionadas.length > 0" style="background-color: rgba(143, 235, 22); ">
+  <div class="modal-dialog modal-dialog-centered" role="dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tu pedido</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+            <div class="form " style= "max-height: auto;">   
+                    <div class="form-group"  id= "dir_inicial_div">
+                        <label class="control-label">Comprar en:</label>
+                        <h2>{{empresa.nombre}}</h2>
+                      </div>          
+                      <div class="form-group">
+                          <label class="control-label">Resumen pedido: </label>
+                          <pre>{{carrito}}</pre>
+                          <hr>
+                          <pre>Valor pedido: ${{valor_pedido}}</pre>
+                          <pre>Valor domicilio: ${{valor_domicilio}}</pre>
+                          <hr>
+                          <pre><b>Valor total: ${{valor_domicilio + valor_pedido}}</b></pre>
+                          <input class="form-control form-control-sm" type="text" placeholder="*Personaliza aquí su pedido. ejemplo: 'Una limonada adicional'" [(ngModel)]="descripcion_domicilio"
+                          (keyup)= "verificarPedido(descripcion_domicilio)" />
+                        </div>
+              </div>
+      </div>
+      <div class="modal-footer">
+          <div class="container" style = "text-align: center;">
+              <button type="button" *ngIf= "enviar_ok" class="btn btn-primary shadow"  style= "width: 80%; height: 30%" (click)= "pedirDomicilio(empresa, usuario)"
+               data-dismiss="modal" title="Solicita servicio">Solicitar</button>
+            </div>
+      </div>
+    </div>
+  </div>
+</div>
+<button class="btn btn-primary" style="width: 100%" *ngIf="enviando">
+  <span class="spinner-border spinner-border-sm"></span>
+  Enviando..
+</button>

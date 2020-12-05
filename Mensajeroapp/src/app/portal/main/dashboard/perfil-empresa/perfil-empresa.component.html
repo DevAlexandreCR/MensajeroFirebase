@@ -1,0 +1,350 @@
+<div class="portada bg-light" id="portada" #portada style="background-image: url(../../../../../assets/portada-web.jpg)">
+  <div class="container">
+      <div class="div-banner-portada">
+        <button id="btn-img" type="button" class="btn btn-link" data-toggle="modal" data-target="#modalportada" (click) = "abrirModalImagen(src_foto_portada)">cambiar foto portada</button>
+        </div>
+    <div class="div-imagen">
+      <img *ngIf ="foto_perfil" [src]= "src_foto_perfil"  class="img img-thumbnail" alt="perfil"> 
+      <img *ngIf ="!foto_perfil" src= "../../../../../assets/logo-web.jpg"  class="img img-thumbnail" alt="perfil"> 
+      <button id="btn-img" type="button" class="btn btn-link" data-toggle="modal" data-target="#modalperfil" (click) = "abrirModalImagen(src_foto_perfil)">cambiar foto perfil</button>
+    </div>
+  </div>
+</div>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-4">{{empresa.nombre}}</h1>
+      <p class="lead">{{empresa.descripcion}}</p>
+    </div>
+  </div>
+<div class="container">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#info" role="tab" aria-controls="home" aria-selected="true">Información</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#oferta" role="tab" aria-controls="profile" aria-selected="false">Ofertas</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active " id="info" role="tabpanel" aria-labelledby="home-tab">
+      <br>
+      <div class="row">
+          <div class="formulario col">
+            <div class="container">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Nombre</strong></span>
+                    </div>
+                    <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Nombre Empresa" [(ngModel)] = "empresa.nombre" (keyup)="editar()" >
+                  </div>
+              <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Descripcion</strong> </span>
+                  </div>
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" [(ngModel)] = "empresa.descripcion" (keyup)="editar()"></textarea>
+                </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Dirección</strong></span>
+            </div>
+            <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Direccion Empresa"  [(ngModel)] = "empresa.direccion_empresa" (keyup)="editar()" >
+          </div>
+          <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Telefono</strong></span>
+              </div>
+              <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Direccion Empresa" [(ngModel)] = "empresa.telefono" (keyup)="editar()">
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Email</strong></span>
+                </div>
+                <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Direccion Empresa" [(ngModel)] = "empresa.email" (keyup)="editar()" >
+              </div>
+              <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01"><strong>Categoría</strong></label>
+                  </div>
+                  <select class="custom-select" id="inputGroupSelect01"  [(ngModel)]= "empresa.categoria" (change)="editar()">
+                    <option selected>{{empresa.categoria}}</option>
+                    <option *ngFor="let n of categorias">{{n}}</option>
+                  </select>
+                </div>
+            </div>
+
+    </div>
+    <div class="col">
+        <div class="card bg-light">
+            <div class="card-header"><strong>Horarios</strong></div>
+            <table class="table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">día</th>
+                  <th scope="col">Abre</th>
+                  <th scope="col">Cierra</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td scope="col" class="dia">Lunes</td>
+                  <td scope="row" >
+                    <input type="time" [(ngModel)]="horario.lunes.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('lunes', true)">editar</button>
+                  </td>
+                  <td scope="row" >
+                      <input type="time" [(ngModel)] = "horario.lunes.cierra" disabled>
+                      <button class="btn-danger" (click)= "openTimePicker('lunes', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Martes</td>
+                  <td scope="row">
+                    <input type="time"[(ngModel)] = "horario.martes.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('martes', true)">editar</button>
+                  </td>
+                  <td scope="row" >
+                    <input type="time" [(ngModel)] = "horario.martes.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('martes', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Miercoles</td>
+                  <td scope="row">
+                    <input type="time"   [(ngModel)] = "horario.miercoles.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('miercoles', true)">editar</button>
+                  </td>
+                  <td scope="row" >
+                    <input type="time"[(ngModel)] = "horario.miercoles.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('miercoles', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Jueves</td>
+                  <td scope="row" >
+                    <input type="time"[(ngModel)] = "horario.jueves.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('jueves', true)">editar</button>
+                  </td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.jueves.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('jueves', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Viernes</td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.viernes.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('viernes', true)">editar</button>
+                  </td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.viernes.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('viernes', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Sábado</td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.sabado.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('sabado', true)">editar</button>
+                  </td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.sabado.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('sabado', false)">editar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td scope="col" class="dia">Domingo</td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.domingo.abre" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('domingo', true)">editar</button>
+                  </td>
+                  <td scope="row">
+                    <input type="time" [(ngModel)] = "horario.domingo.cierra" disabled>
+                    <button class="btn-danger" (click)= "openTimePicker('domingo', false)">editar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+      </div>
+      <div>
+       <button class="btn btn-primary guardar_perfil" type="button" *ngIf= "editando" (click)= "guardarCambios(empresa)">Guardar cambios</button>
+      </div>
+      <div>
+       <button class="btn btn-danger guardar_perfil" type="button" *ngIf= "editando" (click)= "cancelarEdicion()">Cancelar</button>
+      </div>
+</div>
+    <div class="tab-pane fade" id="oferta" role="tabpanel" aria-labelledby="profile-tab">
+      <div>
+        <br>
+        <button class="btn btn-primary" type="button"  data-toggle="modal" data-target="#modalOferta">Agregar Oferta</button>
+      </div>
+      <br>
+      <ol class="list" *ngFor= "let ofert of all_ofertas" style="max-width: 50%; text-align: center;">
+        <li class="list-group-item list-group-item-action shadow" >
+            <div class="row align-items-center" >
+                <div class="card mb-3" style="width: 100%; height: 100%;">
+                    <div class="row no-gutters">
+                      <div class="col-md-4">
+                        <img [src]="ofert.url_foto_oferta" class="card-img" alt="imagen oferta" style="height: 100%">
+                      </div>
+                      <div class="col-md-8">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ofert.titulo}}</h5>
+                          <p class="card-text">{{ofert.descripcion}}</p>
+                          <p><strong>${{ofert.precio}}</strong></p>
+                          <br>
+                          <div class="col">
+                              <button class="btn btn-primary shadow" (click)= "borrarOferta(ofert)">Borrar</button>
+                              <button class="btn btn-danger shadow" data-toggle="modal" data-target="#modalOferta" (click)= "abrirEditarOferta(ofert)" >Editar</button>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </li>
+      </ol>
+    </div>
+</div>
+</div>
+
+
+<!-- modales para agregar oferta-->
+
+<div class="modal fade" id="modalOferta" tabindex="-1" role="dialog" aria-labelledby="modalOfertaTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalOfertaTitle">agregar oferta</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-foto">
+          Agrega una foto
+          <img  [src] = "src_imagen_seleccionada" class="img-perfil img-thumbnail" alt="foto de la carta u oferta"> 
+          <br/>
+          <input type="file" accept=".jpg, .png" (change)= "imgSeleccionada($event)">
+          <br/>
+          <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Titulo</strong></span>
+              </div>
+              <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Titulo" name="titulo" [(ngModel)] = "oferta.titulo" (keyup)="veroferta()">
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Descripcion</strong></span>
+                </div>
+                <input type="text" class="form-control" id="validationTooltipUsername" placeholder="Descripción" name= "descripcion"[(ngModel)] = "oferta.descripcion">
+              </div>
+              <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="validationTooltipUsernamePrepend"><strong>Precio</strong></span>
+                  </div>
+                  <input type="number" class="form-control" id="validationTooltipUsername" placeholder="$0.00" name= "precio"[(ngModel)] = "oferta.precio">
+                </div>
+          <div *ngIf="subiendoImagen" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+            width = "(porcantajeSubida | async) + '%';" aria-valuemin="0" aria-valuemax="100">Subiendo imagen...</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)= "cancelarImagenes()">Cancelar</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal" (click) ="guardarOferta(id_empresa, file, oferta)" >Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- modales para cambio de foto de perfil-->
+
+<div class="modal fade" id="modalperfil" #modalperfil tabindex="-1" role="dialog" aria-labelledby="modalperfilTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalperfilTitle">Perfil</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-foto">
+        <img  [src] = "src_imagen_seleccionada" class="img-perfil img-thumbnail" alt="perfil"> 
+        <br/>
+        <input type="file" accept=".jpg, .png" (change)= "imgSeleccionada($event)">
+        <br/>
+        <div *ngIf="subiendoImagen" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+          width = "(porcantajeSubida | async) + '%';" aria-valuemin="0" aria-valuemax="100">Subiendo imagen...</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)= "cancelarImagenes()">Cancelar</button>
+        <button type="button" *ngIf = "imagenSeleccionada;  else nungunaImagenSeleccionada"
+         class="btn btn-primary" data-dismiss="modal" (click) ="subirImagen(IMG_PERFIL, id_empresa, file)">Guardar Cambios</button>
+        <ng-template #nungunaImagenSeleccionada>
+          <button type="button" disabled= "true" class="btn btn-secundary" >Guardar Cambios</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modales para cambio de foto de la carta-->
+
+<div class="modal fade" id="modalcarta" #modalcarta tabindex="-1" role="dialog" aria-labelledby="modalperfilTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalperfilTitle">Carta</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-foto">
+          <img  [src] = "src_imagen_seleccionada" class="img-perfil img-thumbnail" alt="carta"> 
+          <br/>
+          <input type="file" accept=".jpg, .png" (change)= "imgSeleccionada($event)">
+          <br/>
+          <div *ngIf="subiendoImagen" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+            width = "(porcantajeSubida | async) + '%';" aria-valuemin="0" aria-valuemax="100">Subiendo imagen...</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)= "cancelarImagenes()">Cancelar</button>
+          <button type="button" *ngIf = "imagenSeleccionada;  else nungunaImagenSeleccionada"
+           class="btn btn-primary" data-dismiss="modal" (click) ="subirImagen(IMG_CARTA, id_empresa, file)">Guardar Cambios</button>
+          <ng-template #nungunaImagenSeleccionada>
+            <button type="button" disabled= "true" class="btn btn-secundary" >Guardar Cambios</button>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- modales para cambio de foto de portada-->
+
+<div class="modal fade" id="modalportada" tabindex="-1" role="dialog" aria-labelledby="modalportadaTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalportadaTitle">Portada</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-foto">
+        <img  [src] = "src_imagen_seleccionada" class="img-perfil img-thumbnail" alt="perfil"> 
+        <input type="file" accept=".jpg, .png" (change)= "imgSeleccionada($event)">
+        <br/>
+        <div *ngIf="subiendoImagen" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+          width = "(porcantajeSubida | async) + '%';" aria-valuemin="0" aria-valuemax="100">Subiendo imagen...</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)= "cancelarImagenes()">Cancelar</button>
+        <button *ngIf = "imagenSeleccionada;  else nungunaImagenSeleccionada"
+         type="button" class="btn btn-primary" data-dismiss="modal" (click) ="subirImagen(IMG_PORTADA, id_empresa, file)">Guardar Cambios</button>
+        <ng-template #nungunaImagenSeleccionada>
+          <button type="button" disabled= "true" class="btn btn-secundary" >Guardar Cambios</button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>
+
+

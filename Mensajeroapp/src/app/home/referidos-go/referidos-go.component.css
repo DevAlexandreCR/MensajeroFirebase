@@ -1,0 +1,29 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../assets/bariol_bold.otf) format("opentype"); 
+}
+*{
+    font-family:bariol_bold;
+}
+
+
+
+.container-fluid{
+    background-color: #FBC92A;
+    height: 100vh;
+    padding-top: 10%;
+
+}
+
+.container{
+     background-color: white;
+     box-shadow: black;
+     width: 60%;
+     height: 60%;
+     -webkit-box-shadow: -1px 9px 23px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: -1px 9px 23px 0px rgba(0,0,0,0.75);
+    box-shadow: -1px 9px 23px 0px rgba(0,0,0,0.75);
+    border-radius: 10px
+}

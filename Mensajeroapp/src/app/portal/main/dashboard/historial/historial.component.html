@@ -1,0 +1,195 @@
+<br>
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="pills-domicilios-tab" data-toggle="pill" href="#pills-domicilios" role="tab" aria-controls="pills-domicilios" aria-selected="true">Domicilios</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="pills-mensajero-tab" data-toggle="pill" href="#pills-mensajero" role="tab" aria-controls="pills-mensajero" aria-selected="false">Mensajería</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="pills-mensajeroGO-tab" href="#pills-mensajero-especial" aria-controls="pills-mensajero-especial" data-toggle="pill" role="tab" aria-selected="false">Viajes</a>
+    </li>
+  </ul>
+  <hr>
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-domicilios" role="tabpanel" aria-labelledby="pills-domicilios-tab">
+        <form class="form-inline">
+            <strong>Desde: </strong> <div class="form-group" style="margin-right: 20px">
+              <div class="input-group">
+                <input class="form-control" placeholder="aaaa-mm-dd" 
+                       name="Ddp" [(ngModel)]="desde" ngbDatepicker #d="ngbDatepicker">
+                <div class="input-group-append">
+                    <button class="btn-link fa fa-calendar" (click)="d.toggle()" type="button"></button>
+                </div>
+              </div>
+            </div>  
+            <strong>Hasta: </strong> <div class="form-group" style="margin-right: 20px">
+                <div class="input-group">
+                  <input class="form-control" placeholder="aaaa-mm-dd" 
+                         name="Hdp" [(ngModel)]="hasta" ngbDatepicker #h="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn-link fa fa-calendar" (click)="h.toggle()" type="button"></button>
+                  </div>
+                </div>
+              </div>  
+              <button type="button" class="btn btn-sm btn-secondary" (click)= "cargarFiltroFecha(id_usuario, desde, hasta, 'domicilio')">Buscar</button>
+          </form>
+          <hr>
+          <table class="table table-sm ">
+              <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Nombre cliente</th>
+                    <th scope="col">Telefono</th>
+                    <th scope="col">Descripcion</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Valor pedido</th>
+                    <th scope="col">Valor domicilio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let domi of all_domicilios; let i='index'">
+                    <th scope="row">{{i+1}}</th>
+                    <td>{{domi.fecha_domicilio}}</td>
+                    <td>{{domi.nombre}}</td>
+                    <td>{{domi.telefono}}</td>
+                    <td><textarea class="text-area">{{domi.descripcion}}</textarea></td>
+                    <td>{{domi.estado}}</td>
+                    <td>{{domi.valor_pedido}}</td>
+                    <td>{{domi.valor_domicilio}}</td>
+                  </tr>
+                </tbody>
+            </table>
+    </div>
+    <div class="tab-pane fade" id="pills-mensajero" role="tabpanel" aria-labelledby="pills-mensajero-tab">
+      <form class="form-inline">
+        Desde: <div class="form-group" style="margin-right: 20px">
+          <div class="input-group">
+            <input class="form-control" placeholder="aaaa-mm-dd"
+                   name="Ddp" [(ngModel)]="desde" ngbDatepicker #de="ngbDatepicker">
+            <div class="input-group-append">
+                <button class="btn-link fa fa-calendar" (click)="de.toggle()" type="button"></button>
+            </div>
+          </div>
+        </div>  
+        Hasta: <div class="form-group" style="margin-right: 20px">
+            <div class="input-group">
+              <input class="form-control" placeholder="aaaa-mm-dd" 
+                     name="Hdp" [(ngModel)]="hasta" ngbDatepicker #ha="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn-link fa fa-calendar" (click)="ha.toggle()" type="button"></button>
+              </div>
+            </div>
+          </div>  
+          <button type="button" class="btn btn-sm btn-secondary" (click)= "cargarFiltroFecha(id_usuario, desde, hasta,'pedido')">Buscar</button>
+      </form>
+      <hr>
+      <table class="table table-sm ">
+          <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Nombre cliente</th>
+                <th scope="col">Telefono</th>
+                <th scope="col">Comentarios</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Valor pedido</th>
+                <th scope="col">Mensajero</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ped of all_pedidos; let i='index'">
+                <th scope="row">{{i+1}}</th>
+                <td>{{ped.fecha_pedido}}</td>
+                <td>{{ped.nombre}}</td>
+                <td>{{ped.telefono}}</td>
+                <td><textarea class="text-area">{{ped.comentario}}</textarea></td>
+                <td>{{ped.estado_pedido}}</td>
+                <td>{{ped.valor_pedido}}</td>
+                <td><button class="btn btn-info btn-sm" (click)="verMensajero(ped.codigo_mensajero, 'mensajero')"  data-target="#modalmensajero" data-toggle="modal" >Ver mensajero</button></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="tab-pane fade" id="pills-mensajero-especial" role="tabpanel" aria-labelledby="pills-mensajero-especial-tab">
+      <form class="form-inline">
+        Desde: <div class="form-group" style="margin-right: 20px">
+          <div class="input-group">
+            <input class="form-control" placeholder="aaaa-mm-dd" 
+                   name="Ddp" [(ngModel)]="desde" ngbDatepicker #des="ngbDatepicker">
+            <div class="input-group-append">
+                <button class="btn-link fa fa-calendar" (click)="des.toggle()" type="button"></button>
+            </div>
+          </div>
+        </div>  
+        Hasta: <div class="form-group" style="margin-right: 20px">
+            <div class="input-group">
+              <input class="form-control" placeholder="aaaa-mm-dd" 
+                     name="Hdp" [(ngModel)]="hasta" ngbDatepicker #has="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn-link fa fa-calendar" (click)="has.toggle()" type="button"></button>
+              </div>
+            </div>
+          </div>  
+          <button type="button" class="btn btn-sm btn-secondary" (click)= "cargarFiltroFecha(id_usuario, desde, hasta,'pedido_especial')">Buscar</button>
+      </form>
+      <hr>
+      <table class="table table-sm ">
+          <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Nombre cliente</th>
+                <th scope="col">Telefono</th>
+                <th scope="col">Comentarios</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Valor pedido</th>
+                <th scope="col">Mensajero</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ped of all_pedidos_especial; let i='index'">
+                <th scope="row">{{i+1}}</th>
+                <td>{{ped.fecha_pedido}}</td>
+                <td>{{ped.nombre}}</td>
+                <td>{{ped.telefono}}</td>
+                <td><textarea class="text-area">{{ped.comentario}}</textarea></td>
+                <td>{{ped.estado_pedido}}</td>
+                <td>{{ped.valor_pedido}}</td>
+                <td><button class="btn btn-info btn-sm" (click)="verMensajero(ped.codigo_mensajero, 'mensajero_especial')" data-target="#modalmensajero" data-toggle="modal" >Ver mensajero</button></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+  </div>
+
+  <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" id="modalmensajero" aria-hidden="true" >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Detalles mensajero</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="card" style="width: 100%;">
+            <img [src]="url_foto_mensajero | async" class="card-img-top" alt="..." >
+            <div class="card-body">
+              <h5 class="card-title">{{mensajero.nombre}}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Vehículo: {{mensajero.marca}} {{mensajero.modelo_vehiculo}} {{mensajero.color}}</li>
+              <li class="list-group-item">PLacas: {{mensajero.placa}}</li>
+            </ul>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+

@@ -1,0 +1,126 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../../../assets/bariol_bold.otf) format("opentype"); 
+}
+
+.img {
+    height: 100%;
+    position: relative;
+    bottom: -50%;
+}
+
+.div-imagen {
+    height: 13vh;
+}
+.div-banner-portada {
+    height: 12vh;
+}
+
+.portada {
+    height: 25vh;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    width: 100%;
+}
+
+.img-perfil {
+    height: 20vh;
+}
+
+#cuerpo-perfil {
+    text-align: center
+}
+
+.jumbotron {
+    background-color: white;
+}
+
+.formulario {
+    width: 30vw;
+}
+
+.input-group-text {
+    width: 10vw
+}
+
+.guardar_perfil {
+    width: 100%;
+}´
+
+.container {
+    height: 100%;
+    margin-bottom: 2%;
+}
+
+.image {
+    width: 100%;
+    min-width: 500px;
+}
+
+.datos-empresa {
+    text-align: center;
+}
+
+.card {
+    width: 100%;
+}
+
+.agregar:hover {
+    cursor: pointer;
+}
+
+.div-pedido{
+    position: sticky;
+    top: 100px;
+    background-color: aliceblue
+}
+
+#canasta{
+    visibility: hidden;
+    height: 0px;
+}
+
+.notify-badge{
+    visibility: hidden
+}
+
+@media (max-width: 1000px) {
+    .div-pedido{
+        visibility: hidden;
+        height: 0px;
+    }
+    #canasta{
+        float: right;
+        visibility: visible;
+        height: 150px;
+        z-index: 100;
+    }
+    .notify-badge{
+        position: absolute;
+        right:30px;
+        top:0px;
+        width: 40px;
+        background:red;
+        text-align: center;
+        border-radius: 50px;
+        color:white;
+        padding:5px 10px;
+        font-size:20px;
+        visibility: visible;
+    }
+    .item {
+        padding-top:20px;
+        display:inline-block;
+        position: fixed;
+        bottom: 65px;
+        right: 20px;
+        z-index: 100;
+    }
+
+    .titulo{
+        float: right
+      }
+}

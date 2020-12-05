@@ -1,0 +1,19 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../assets/bariol_bold.otf) format("opentype"); 
+}
+*{
+    font-family:bariol_bold;
+}
+
+.container-fluid {
+    padding: 0%;
+}
+
+@media (max-width: 600px) {
+    .container-fluid{
+        width: 600px;
+    }
+}

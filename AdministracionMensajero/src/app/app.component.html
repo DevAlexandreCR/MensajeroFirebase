@@ -1,0 +1,1417 @@
+<nav class="navbar sticky-top " *ngIf="usuario | async">
+  <div class="container">
+    <img src="favicon.ico" width="40" height="40" class="d-inline-block" alt="">
+    <div class="justify-content-between">
+      <a href="#">
+        <button class="btn btn-outline-warning my-2 my-sm-0" type="submit" (click)="cerrarSesion()">Cerrar sesion</button>
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="container-fluid-2 " *ngIf=" usuario | async" style="margin-left: 20px"style="margin-rigth: 20px">
+  <ngb-tabset>
+    <ngb-tab title="Servicios Mensajero Moto" *ngIf="mensajeros_motos">
+      <ng-template ngbTabContent>
+          <div class="row">
+            <div class="col-xs-7 col-sm-6 col-lg-8">
+              <div class="table-responsive">
+            <h2>Servicios</h2>
+            <table id="tabla_pedidos" class="table-sm table table-condensed table-hover ">
+              <thead class="thead-primary">
+                <tr>
+                  <th>id</th>
+                  <th>Hora</th>
+                  <th>Nombre</th>
+                  <th>Direccion Inicial</th>
+                  <th>Movil</th>
+                  <th>Estado Servicio</th>
+                  <th>Detalles</th>
+                  <th>Terminar Servicio</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let n of my_pedidos; let i='index'">
+                  <td>{{i+1}}</td>
+                  <td>{{n.fecha_pedido}}</td>
+                  <td>{{n.nombre}}</td>
+                  <td (click)="ver_mapa(n,mapamoto)">{{n.dir_inicial}}</td>
+                  <td *ngIf="n.codigo_mensajero=='7gJSMJsZNjRUDoOzKnO0GefE0ND3' && n.estado_pedido !='cancelado' && n.estado_pedido !='terminado'" (click)="ver_asignar_mensajero(n,asignarmovil_moto)" bgcolor="#F8FF15">Asignar Mensajero</td>
+                  <td *ngIf="n.codigo_mensajero=='7gJSMJsZNjRUDoOzKnO0GefE0ND3' && n.estado_pedido =='cancelado'">Servicio cancelado</td>
+                  <td *ngIf="n.codigo_mensajero !='7gJSMJsZNjRUDoOzKnO0GefE0ND3'"><button type="button" class="btn btn-info" (click)="verMensajeroDelServicioMoto(n.codigo_mensajero,modalvermensajerodelserviciomoto)">Ver Mensajero</button></td>
+                  <td *ngIf="n.estado_pedido =='cancelado'" bgcolor="#ff0000">Servicio Cancelado</td>
+                  <td *ngIf="n.estado_pedido =='terminado'" bgcolor="#06bd06">Servicio Terminado</td>
+                  <td *ngIf="n.estado_pedido !='cancelado' && n.estado_pedido !='terminado'">{{n.estado_pedido}}</td>
+                  <td>
+                    <button type="button" class="btn btn-info" (click)="verPedido(n, pedidoModal)">Ver</button>
+                  </td>
+                  <td>
+                    <button class="btn btn-primary" (click)="terminar_servicio_moto(n) ">Terminar </button>
+                    <button class="btn btn-warning" (click)="ver_liberar_servicio_moto(n,liberar_moto) ">Liberar </button>
+                    <button class="btn btn-danger" (click)="ver_cancelar_servicio_moto(n,cancelar_moto) ">Cancelar </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>   
+              </div>  
+          </div>
+          <div class="col-xs-5 col-sm-6 col-lg-4">
+              <h2>Agregar Servicio</h2>
+              <div class="w3-container w3-quarter" >
+                  <div class="input-group">
+                      <div class="input-group-addon">¿Es para una empresa?</div>
+                      <select class="form-control form-control-sm" [(ngModel)]="servicio_empresa">
+                        <option>Si</option>
+                        <option>No</option>
+                      </select>
+                    </div>
+                  <div class="input-group">
+                      <div class="input-group-addon">Nombre</div>
+                      <input #nombreinp id="input_nombre" required minlength="4" class="form-control" type="text" placeholder="Nombre del usuario" [(ngModel)]="nombre_escrito"
+                        (keyup)="buscar_por_nombre()" autocomplete="nope">
+                    </div>
+                <a>{{tiene_letras}}</a>
+                <div class="form-group">
+                  <ul *ngFor="let item of filteredList">
+                    <li>
+                      <a (click)="nombre_seleccionado(item)">{{item}}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="input-group">
+                    <div class="input-group-addon">Telefono</div>
+                    <input #numeroinp id="numero" class="form-control" type="tel" required minlength="6"  autocomplete="nope" placeholder="Telefono" [(ngModel)]="pedido.telefono"
+                    onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;" />
+                  </div>
+                <!-- <div class="form-group" >
+                <ul *ngFor="let item of filtro_por_nombre" >
+                    <li >
+                        <a (click)="numero_seleccionado(item)">{{item}}</a>
+                    </li>
+                </ul>        
+            </div>-->
+                <div class="input-group">
+                  <div class="input-group-addon">Dirección</div>
+                  <input #inputdireccionagregar class="form-control" type="text" placeholder="Direccion Inicial" required minlength="5"  [(ngModel)]="pedido.dir_inicial" (keyup)="todoMayuscula(inputdireccionagregar)" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">¿Cuantos Mensajeros?</div>
+                  <select class="form-control form-control-sm" [(ngModel)]="pedido.cuantos_mensajeros">
+                    <option>1</option>
+                    <option *ngIf = "pedido.servicio_empresa">2</option>
+                    <option *ngIf = "pedido.servicio_empresa">3</option>
+                    <option *ngIf = "pedido.servicio_empresa">4</option>
+                    <option *ngIf = "pedido.servicio_empresa">5</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                    <div class="input-group-addon">Tipo Servicio</div>
+                    <select class="form-control form-control-sm" [(ngModel)]="tipo_pedido">
+                      <option>Domicilios</option>
+                      <option>Encomiendas</option>
+                      <option>Pagos de Facturas-Tramites</option>
+                      <option>Compras</option>
+                    </select>
+                  </div>
+                  
+                  <div class="input-group">
+                    <div class="input-group-addon">Agregar condición</div>
+                    <input class="form-control" type="text" placeholder="Condicion" [(ngModel)]="pedido.condicion" />
+                  </div>
+                  <small>*Agregue aquí una condición. ejemplo: "llevar sencillo" o "tener cajón para pizza"</small>
+                  <div class="input-group">
+                      <div class="input-group-addon">Agregar Descripción</div>
+                      <input class="form-control" type="text" placeholder="Descripción del servicio" [(ngModel)]="pedido.comentario" />
+                    </div>
+                    <small>*Agregue aquí una descripción. ejemplo: "Comprar 1 galón de aceite y llevarlo a..."</small>
+                <hr />
+                <div class="row">
+                  <div class="col-md-6">
+                    <button class="btn btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                  </div>
+                  <div class="col-md-6">
+                    <button class="btn btn-primary btn-sm btn-block" href="#" (click)="agregar_servicio_moto(nombreinp,numeroinp,inputdireccionagregar)" (click)="c('Close click')">Guardar servicio</button>
+                  </div>
+                </div>
+                </div>
+          </div>
+                      <!-- ventana para ver el mapa-->
+                    
+          <ng-template #mapamoto let-c="close" let-d="dismiss">
+            <div class="modal-header">
+              <h4 class="modal-title">Mapa Popayán</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17">
+                <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+              </agm-map>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+          </ng-template>
+          <!-- *************************************fin de la ventana del mapa-->
+                  <!-- **********************************************ventana para asignar movil al servicio********************
+    *************************************************************************************************************************************************************-->
+
+        <ng-template #asignarmovil_moto let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title">Asignar Movil</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <div class="input-group">
+                <div class="input-group-addon">Buscar por placa</div>
+                <input id="numero" class="form-control" type="text" placeholder="Placas" (keyup)="buscar_por_placa()" [(ngModel)]="placa_escrita"
+                />
+              </div>
+              <div class="form-group">
+                <ul *ngFor="let item of filtroPorPlaca">
+                  <li>
+                    <a (click)="placa_seleccionada(item)">{{item[0]}}</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="input-group">
+                  <div class="input-group-addon">Buscar por F</div>
+                  <input id="numero" class="form-control" type="text" placeholder="F" (keyup)="buscar_por_F()" [(ngModel)]="F_escrito"
+                  />
+                </div>
+                <div class="form-group">
+                  <ul *ngFor="let items of filtro_F">
+                    <li>
+                      <a (click)="F_seleccionado(items)">{{items[0]}}</a>
+                    </li>
+                  </ul>
+                </div>    
+              <div class="alert alert-danger alert-dismissable" *ngIf="mensajero_bloqueado">
+
+                <strong>¡Mensajero Bloqueado ! </strong>No es posible asignarle el servicio.
+              </div>
+              <div class="alert alert-danger alert-dismissable" *ngIf="mensajero_unregistered">
+
+                  <strong>¡F no registrado ! </strong>No es posible asignarle el servicio.
+                </div>
+              <div class="alert alert-warning alert-dismissable" *ngIf="alert_sin_placa">
+
+
+                <strong>¡Asignar Mensajero ! </strong>Asigna un mensajero.
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-primary btn-sm btn-block" (click)="asignar_mensajero()" (click)="c('Close click')">Asignar</button>
+          </div>
+        </ng-template>
+        <!--****************************************************fin de la ventana asignar movil-->
+          <!-- *************************************ventana para cancelar servicio
+   ***************************************************************************************-->
+   
+   <ng-template #cancelar_moto let-c="close" let-d="dismiss">
+            <div class="modal-header">
+              <h4 class="modal-title">Cancelar Servicio</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="input-group">
+                  <h6>¿SEGURO DESEA CANCELAR ESTE SERVICIO?</h6>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-primary btn-sm btn-block " (click)="cancelar_servicio_moto()" (click)="c('Close click')">OK</button>
+            </div>
+          </ng-template>
+          <!--********************************fin de la ventana para liberar servicio-->
+          <ng-template #liberar_moto let-c="close" let-d="dismiss">
+            <div class="modal-header">
+              <h4 class="modal-title">Liberar Servicio</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="input-group">
+                  <h6>¿SEGURO DESEA LIBERAR ESTE SERVICIO?</h6>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn-primary btn-sm btn-block " (click)="liberar_servicio_moto()" (click)="c('Close click')">OK</button>
+            </div>
+          </ng-template>
+          <!--********************************fin de la ventana para liberar servicio-->
+
+                    <!-- este es el modal del mensajero que lleva el servicio-->
+        <ng-template #modalvermensajerodelserviciomoto let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title">Mensajero</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h2>Datos Mensajero
+            </h2>
+            <input class="form-control" type="text" placeholder="Codigo" readonly="true" [(ngModel)]="mensajero.codigo" />
+            <br />
+            <input class="form-control" type="text" placeholder="Telefono" [(ngModel)]="mensajero.telefono" />
+            <br />
+            <input class="form-control" type="text" placeholder="Nombre " [(ngModel)]="mensajero.nombre" />
+            <br />
+            <input class="form-control" type="text" placeholder="Placa" [(ngModel)]="mensajero.placa" />
+            <br />
+            <input class="form-control" type="text" placeholder="Calificacion" readonly="true" [(ngModel)]="mensajero.calificacion"
+            />
+          </div>
+          <div class="modal-footer">
+          </div>
+        </ng-template>
+          <!--**************************************** ventana emergente para ver detalles de pedido
+     **************************************************************************************************-->
+          <ng-template #pedidoModal let-c="close" let-d="dismiss">
+            <div class="modal-dialog">
+              <div class="modal-header">
+                <h4 class="modal-title">Pedido</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+
+                  <div class="input-group">
+                    <div class="input-group-addon">Fecha</div>
+                    <input class="form-control" type="text" placeholder="Fecha" [(ngModel)]="pedido.fecha_pedido" readonly="true" />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Nombre</div>
+                    <input class="form-control" type="text" id="nombre" placeholder="Nombre del usuario" [(ngModel)]="pedido.nombre" readonly="true"
+                    />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Telefono</div>
+                    <input class="form-control" type="text" placeholder="Telefono " [(ngModel)]="pedido.telefono" readonly="true" />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Direccion Inicial</div>
+                    <input class="form-control" type="text" placeholder="Direccion Inicial" [(ngModel)]="pedido.dir_inicial" />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Direccion Final</div>
+                    <input class="form-control" type="text" placeholder="Direccion Final" [(ngModel)]="pedido.dir_final" />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Tipo de Solicitud</div>
+                    <input class="form-control" type="text" placeholder="Tipo de solicitud" [(ngModel)]="pedido.tipo_pedido" readonly="true"
+                    />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Asignar Mensajero</div>
+                    <select class="form-control form-control-sm" *ngIf="estadodelpedido" [(ngModel)]="pedido.codigo_mensajero">
+                      <option>asignar movil</option>
+                      <option *ngFor="let n of my_mensajero">{{n.codigo}}</option>
+
+                    </select>
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Valor $</div>
+                    <input class="form-control" type="number" readonly="true" (click)="veragregartarifa(agregarprecio)" placeholder="Valor" [(ngModel)]="pedido.valor_pedido"
+                    />
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Comentario</div>
+                    <textarea class="form-control" placeholder="comentario" [(ngModel)]="pedido.comentario"></textarea>
+                  </div>
+                  <hr />
+                  <div class="row">
+                    <div class="col-md-6">
+                      <button class="btn btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button class="btn btn-primary btn-sm btn-block" href="#" (click)="editarPedido()" (click)="c('Close click')">Guardar Pedido</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+
+              </div>
+            </div>
+          </ng-template>
+
+          <!--*****************************************************//modal para agregr valor
+ ***************************************************************************************************-->
+          <ng-template #agregarprecio let-c="close" let-d="dismiss">
+            <div class="container-precio">
+              <div class="modal-header">
+                <h4 class="modal-title">Agregar Precio</h4>
+                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-content">
+                <div class="input-group">
+                  <div class="input-group-addon">Tarifa Mensajero</div>
+                  <input class="form-control" type="number" placeholder="Valor" (keyup)="agregarValor()" [(ngModel)]="tarifa_mensajero" />
+                </div>
+
+                <div class="input-group">
+                  <div class="input-group-addon">Tarifa Completa</div>
+                  <input class="form-control" type="number" placeholder="Valor" [(ngModel)]="tarifa_completa" readonly="true" />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <hr />
+                <button class="btn btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">Guardar</button>
+              </div>
+            </div>
+          </ng-template>
+          <!-- ****************************************************fin ventana emergente-->
+
+          <!-- *****************************************************PEDIDOS PROGRAMADOS
+ *************************************************************************************************************-->
+
+          <!-- *******************************************ventana emergente para ver detalles de pedido
+ *********************************************************************************************************************-->
+          <ng-template #programadoModal let-c="close" let-d="dismiss">
+            <div class="modal-header">
+              <h4 class="modal-title">Pedido Programado</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+
+                <div class="input-group">
+                  <div class="input-group-addon">Fecha</div>
+                  <input class="form-control" type="text" placeholder="Fecha" [(ngModel)]="pedidoProgramado.fecha_pedido" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Hora</div>
+                  <input class="form-control" type="text" placeholder="Hora" [(ngModel)]="pedidoProgramado.hora_pedido" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Nombre</div>
+                  <input class="form-control" type="text" id="nombre" placeholder="Nombre del usuario" [(ngModel)]="pedidoProgramado.nombre"
+                    readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Telefono</div>
+                  <input class="form-control" type="text" placeholder="Telefono " [(ngModel)]="pedidoProgramado.telefono" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Direccion Inicial</div>
+                  <input class="form-control" type="text" placeholder="Direccion Inicial" [(ngModel)]="pedidoProgramado.dir_inicial" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Tipo de Solicitud</div>
+                  <input class="form-control" type="text" placeholder="Tipo de solicitud" [(ngModel)]="pedidoProgramado.tipo_pedido" readonly="true"
+                  />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Estado del Pedido</div>
+                  <select class="form-control form-control-sm" [(ngModel)]="pedidoProgramado.estado_pedido">
+                    <option>programado</option>
+                    <option>pte_movil</option>
+                    <option>pte_reporte</option>
+                    <option>terminado</option>
+                    <option>cancelado</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Asignar Mensajero</div>
+                  <select class="form-control form-control-sm" *ngIf="estadodelpedido" [(ngModel)]="pedidoProgramado.codigo_mensajero">
+                    <option>asignar movil</option>
+                    <option *ngFor="let n of my_mensajero">{{n.codigo}}</option>
+                  </select>
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Valor $</div>
+                  <input class="form-control" type="text" placeholder="Valor" [(ngModel)]="pedidoProgramado.valor_pedido" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Comentario</div>
+                  <textarea class="form-control" placeholder="comentario" [(ngModel)]="pedidoProgramado.comentario"></textarea>
+                </div>
+                <hr />
+                <div class="row">
+                  <div class="col-md-6">
+                    <button class="btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                  </div>
+                  <div class="col-md-6">
+                    <button class="btn-primary btn-sm btn-block" href="#" (click)="editarPedidoProgramado()" (click)="c('Close click')">Guardar Pedido</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+          </ng-template>
+
+          <!-- *******************************************************fin ventana emergente-->
+
+
+        </div>
+      </ng-template>
+      </ngb-tab>
+      <ngb-tab title="Mensajeros Conectados" *ngIf="mensajeros_motos">
+          <ng-template ngbTabContent>
+    
+                              <!-- ****************************************************container seguimiento motos
+               *************************************************************************************************************************************-->
+               <div class="row">
+                  <hr />
+                  <button class="btn btn-warning btn-sm btn-block" href="#" (click)="getMensajerosMotoConectados()">Cargar</button>
+                  <hr />
+                  <div class="col-md-6">
+                  <h2>Todos los Mensajeros Conectados
+                    </h2>
+                    <div class="table-responsive">
+                      <table class="table-sm table table table-condensed table-hover table table-striped">
+                        <thead class="thead-primary">
+                          <tr>
+                            <th class="warning">#</th>
+                            <th class="warning">Nombre</th>
+                            <th class="warning">Numero</th>
+                            <th class="warning">Hora de conexion</th>
+                            <th class="warning">Seguir</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let n of mensajero_conectado; let i='index'">
+                            <td>{{i+1}}</td>
+                            <td>{{n.nombre}}</td>
+                            <td>{{n.telefono}}</td>
+                            <td>{{n.hora_conexion}}</td>
+                            <td (click)="ver_ubicacion_mensajero(n)">ver</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17">
+                      <agm-marker [latitude]="lat_mensajero" [longitude]="lng_mensajero"></agm-marker>
+                    </agm-map>
+                  </div>
+              </div>
+            </ng-template>
+          </ngb-tab>
+                <!-- ****************************************************fin container seguimiento motos
+    *********************************************************************************************************************************************-->
+
+        <!-- ******************************************************INICIO DE PESTAÑA DE MENSAJEROS DE MOTOS
+ **************************************************************************************************************************************-->
+    <ngb-tab title="Mensajero" *ngIf="mensajeros_motos">
+      <ng-template ngbTabContent>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroMotoSegunEstado('verificar')">Mensajeros para verificar</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroMotoSegunEstado('nuevo')">Mensajeros Nuevos</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroMotoSegunEstado('bloqueado')">Mensajeros Bloqueados</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroMotoSegunEstado('verificado')">Mensajeros Verificados</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroMotoSegunEstado('activo')">Mensajeros Activos</button>
+        <div class="row">
+          <div class="col-md-5">
+            <h2>Mensajeros</h2>
+            <div class="table-responsive">
+              <table class="table-sm table table table-condensed table-hover table table-striped">
+                <thead class="thead-primary">
+                  <tr>
+                    <th class="warning">#</th>
+                    <th class="warning">estado</th>
+                    <th class="warning">nombre</th>
+                    <th class="warning">placa</th>
+                    <th class="warning">Detalles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor ="let n of mensajero_moto_ver; let i='index'">
+                    <td>{{i+1}}</td>
+                    <td>{{n.estado}}</td>
+                    <td>{{n.nombre}}</td>
+                    <td>{{n.placa}}</td>
+                    <td>
+                      <button type="button" class="btn btn-info" href="#" (click)=" VerifivarMensajero(n)">Ver</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col-md-7">
+            <h2>Detalles del Mensajero</h2>
+            <div class="form-group">
+                <div>
+                    <img id="img" class="image" height="100px" width="100px" [src]="urlimgPerfil | async" draggable="true">
+                  </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Nombre</div>
+                <input class="form-control" type="text" placeholder="Nombre" [(ngModel)]="mensajero.nombre" #inputnombredetalles (keyup)="primeraMayuscula(inputnombredetalles)" />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Teléfono</div>
+                <input class="form-control" type="text" id="Teléfono" placeholder="Teléfono " [(ngModel)]="mensajero.telefono" readonly="true"
+                />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" (click)="DescargarFotoMoto('foto_tarjeta1',mensajero.codigo,verfotomoto)" style="width: 200px">Placas</div>
+                <input class="form-control" #inputplacadetalles (keyup)="todoMayuscula(inputplacadetalles)" type="text" placeholder="Placas " [(ngModel)]="mensajero.placa" />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Estado mensajero</div>
+                <select class="form-control form-control-sm" [(ngModel)]="mensajero.estado">
+                  <option>activo</option>
+                  <option>bloqueado</option>
+                  <option>subir_imagenes</option>
+                  <option>verificar</option>
+                  <option>verificado</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" (click)="DescargarFotoMoto('foto_seguro1',mensajero.codigo,verfotomoto)" style="width: 200px">Fecha Seguro</div>
+                <input class="form-control" placeholder="Fecha Seguro " placement="left" type="text" #drp="bsDatepicker" bsDatepicker [(ngModel)]="mensajero.fecha_seguro"
+                [(bsValue)]="mensajero.fecha_seguro" value="{{ mensajero.fecha_seguro | date:'yyyy-MM-dd' }}"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" (click)="DescargarFotoMoto('foto_licencia1',mensajero.codigo,verfotomoto)" style="width: 200px">Fecha Cumpleaños</div>
+                <input class="form-control" placeholder="Cumpleaños" type="text" placement="left" #drp="bsDatepicker" bsDatepicker [(ngModel)]="mensajero.birth_day"
+                [(bsValue)]="mensajero.birth_day" value="{{ mensajero.birth_day | date:'yyyy-MM-dd' }}"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Modelo vehículo</div>
+                <input class="form-control" placeholder="modelo" [(ngModel)]="mensajero.modelo_vehiculo" #inputmodelodetalles (keyup)="primeraMayuscula(inputmodelodetalles)" />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Marca vehículo</div>
+                <input class="form-control" placeholder="marca" [(ngModel)]="mensajero.marca" #inputmarcadetalles (keyup)="todoMayuscula(inputmarcadetalles)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Color vehículo</div>
+                <input class="form-control" placeholder="color" [(ngModel)]="mensajero.color" #inputcolordetalles (keyup)="primeraMayuscula(inputcolordetalles)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Calificacion</div>
+                <input class="form-control" placeholder="calificacion" [(ngModel)]="mensajero.calificacion " />
+              </div>
+              <hr />
+              <div class="row">
+                <div class="col-md-6">
+                  <button class="btn btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                </div>
+                <div class="col-md-6">
+                  <button class="btn btn-primary btn-sm btn-block" href="#" (click)="crearMensajero()" (click)="c('Close click')">
+                    Guardar </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+    
+    <!--//********************************************modal para ver la foto
+    *******************************************************************************************************************-->
+
+    <ng-template #verfoto let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4 class="modal-title">Imagen</h4>
+        <button class="btn btn-info btn-sm btn-block"(click)="CambiarFoto(mensajero.codigo)">CAMBIAR FOTO</button>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-content" draggable="true">
+        <div>
+          <img id="img" [@rotatedState]='state'class="image-responsive" [src]="urlimg | async" draggable="true" style= "width: 100%">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <hr />
+        <button class="btn btn-info btn-sm btn-block"(click)="rotate()">Rotar imagen izquierda</button>
+        <button class="btn btn-info btn-sm btn-block"(click)="rotateDer()">Rotar imagen derecha</button>
+        <button class="btn btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">OK</button>
+      </div>
+    </ng-template>
+
+        <!--//********************************************modal para ver la foto moto
+    *******************************************************************************************************************-->
+
+    <ng-template #verfotomoto let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4 class="modal-title">Imagen</h4>
+        <button class="btn btn-info btn-sm btn-block"(click)="CambiarFotoMoto(mensajero.codigo)">CAMBIAR FOTO</button>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-content" draggable="true">
+        <div>
+          <img id="img" [@rotatedState]='state'class="image-responsive" [src]="urlimg | async" draggable="true" style= "width: 100%">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <hr />
+        <button class="btn btn-info btn-sm btn-block"(click)="rotate()">Rotar imagen izquierda</button>
+        <button class="btn btn-info btn-sm btn-block"(click)="rotateDer()">Rotar imagen derecha</button>
+        <button class="btn btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">OK</button>
+      </div>
+    </ng-template>
+
+    <!--***************************************** INICIO DE PESTAÑA DE LA pestaña para agregar empresas
+        ******************************************************************************************************************************-->
+        <ngb-tab title="Empresas" *ngIf="mensajeros_motos">
+            <ng-template ngbTabContent>
+              <button class="btn-primary btn-sm" href="#" (click)="verAgregarEmpresa()">Agregar nueva empresa</button>
+              <div class="row">
+                <div class="col-md-5">
+                  <h2>Empresas Registradas
+                  </h2>
+                  <div class="table-responsive">
+                    <table class="table-sm table table table-condensed table-hover table table-striped">
+                      <thead class="thead-primary">
+                        <tr>
+                          <th class="warning">#</th>
+                          <th class="warning">Nombre Empresa</th>
+                          <th class="warning">Direccion</th>
+                          <th class="warning">Telefono</th>
+                          <th class="btn-danger">Ver</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor ="let n of usuario_empresas; let i='index'">
+                          <td>{{i+1}}</td>
+                          <td>{{n.nombre}}</td>
+                          <td>{{n.direccion_empresa}}</td>
+                          <td>{{n.telefono}}</td>
+                          <td>
+                            <button type="button" class="btn btn-danger" (click)=" verAgregarEmpresa(n)">Ver</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="col-md-7" *ngIf="agregar_empresa">
+                  <h2>Agregar Nueva Empresa
+                  </h2>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon" style="width: 200px">Nombre</div>
+                      <input class="form-control" #inputnombre type="text" placeholder="Nombre" [(ngModel)]="empresa.nombre" (keyup)="primeraMayuscula(inputnombre)"/>
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-addon" style="width: 200px">Teléfono</div>
+                      <input class="form-control" type="text" id="Teléfono" placeholder="Teléfono " [(ngModel)]="empresa.telefono" maxlength="10"
+                      onKeypress="if (event.keyCode < 45 || event.keyCode > 57) event.returnValue = false;"/>
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-addon" style="width: 200px" >Direccion Empresa</div>
+                      <input class="form-control"  #inputdireccion placeholder="Direccion" [(ngModel)]="empresa.direccion_empresa" (keyup)="todoMayuscula(inputdireccion)" />
+                    </div>
+                    <div class="input-group">
+                      <div class="input-group-addon" style="width: 200px">E-mail</div>
+                      <input class="form-control" placeholder="E-mail" [(ngModel)]="empresa.email" />
+                    </div>
+                    <hr />
+                    <div class="row">
+                      <div class="col-md-6">
+                        <button class="btn btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                      </div>
+                      <div class="col-md-6">
+                        <button class="btn btn-primary btn-sm btn-block" href="#" (click)="crearEmpresa(empresa)" (click)="c('Close click')">
+                          Guardar </button>
+                      </div>
+                    </div>
+                   </div>
+                </div>
+              </div>
+            </ng-template>
+
+      <!-- ******************************************ventana emergente para ver detalles de pedido
+      *****************************************************************************************************************************************-->
+
+      <ng-template #pedidofiltrado let-c="close" let-d="dismiss">
+        <div class="modal-header">
+          <h4 class="modal-title">Pedido</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+
+            <div class="input-group">
+              <div class="input-group-addon">Fecha</div>
+              <input class="form-control" type="text" placeholder="Fecha" [(ngModel)]="pedido.fecha_pedido" readonly="true" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Nombre</div>
+              <input class="form-control" type="text" id="nombre" placeholder="Nombre del usuario" [(ngModel)]="pedido.nombre" readonly="true"
+              />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Telefono</div>
+              <input class="form-control" type="text" placeholder="Telefono " [(ngModel)]="pedido.telefono" readonly="true" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Direccion Inicial</div>
+              <input class="form-control" type="text" placeholder="Direccion Inicial" [(ngModel)]="pedido.dir_inicial" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Direccion Final</div>
+              <input class="form-control" type="text" placeholder="Direccion Final" [(ngModel)]="pedido.dir_final" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Tipo de Solicitud</div>
+              <input class="form-control" type="text" placeholder="Tipo de solicitud" [(ngModel)]="pedido.tipo_pedido" readonly="true"
+              />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Estado del Pedido</div>
+              <input class="form-control" type="text" placeholder="Tipo de solicitud" [(ngModel)]="pedido.estado_pedido" readonly="true"
+              />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Codigo Mensajero</div>
+              <input class="form-control" type="text" placeholder="Tipo de solicitud" [(ngModel)]="pedido.codigo_mensajero" readonly="true"
+              />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Valor</div>
+              <input class="form-control" type="text" placeholder="Valor" [(ngModel)]="pedido.valor_pedido" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Valor a Entregar</div>
+              <input class="form-control" type="text" placeholder="Valor" [(ngModel)]="valor_porcentaje" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Comentario</div>
+              <textarea class="form-control" placeholder="comentario" [(ngModel)]="pedido.comentario"></textarea>
+            </div>
+            <hr />
+            <div class="row">
+              <button class="btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">Cerrar</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </ng-template>
+    </ngb-tab>
+    <!-- **************************************************FIN DE LA PESTAÑA GESTION-->
+
+    <!--*************************************** INICIO DE LA PESTAÑA SERVICOS DE MENSAJERO ESPECIAL
+        ********************************************************************************************************************************-->
+    <ngb-tab title="Servicios Mensajero Carros" *ngIf="mensajeros_carros">
+      <ng-template ngbTabContent>
+        <div class="row" style="margin-left: 10px">
+          <h2>Servicios  </h2>
+          <a href="#">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="getPedidosEspecial(10)">Ultimos 10</button>
+          </a>
+          <a href="#">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="getPedidosEspecial(100)">Ultimos 100</button>
+          </a>
+          <a href="#">
+            <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" (click)="getPedidosEspecial(1000)">Ultimos 1000</button>
+          </a>
+          <table id="tabla_pedidos_carros" class="table-sm table table-condensed table-hover ">
+            <thead class="thead-primary">
+              <tr>
+                <th>id</th>
+                <th>Detalles Usuario</th>
+                <th>Fecha y Hora</th>
+                <th>Direccion Inicial</th>
+                <th>Placas del movil</th>
+                <th>Codigo de Movil</th>
+                <th>Estado del Servicio</th>
+                <th>Terminar Servicio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let n of my_pedidos_carro; let i='index'">
+                <td>{{i+1}}</td>
+                <td>
+                  <button class="btn btn-primary" (click)="ver_pedido_especial(n,modal_pedido_especial) ">Ver Detalles </button>
+                </td>
+                <td>{{n.fecha_pedido}}</td>
+                <td (click)="ver_mapa(n,mapa)">{{n.dir_inicial}}</td>
+                <td>{{n.placa}}</td>
+                <td (click)="verMensajeroDelServicio(n.codigo_mensajero,modalvermensajerodelservicio)">{{n.codigo_mensajero}}</td>
+                <td>{{n.estado_pedido}}</td>
+                <td>
+                  <button class="btn btn-primary" (click)="ver_borrar_servicio_especial(n,borrar_servicio) ">Borrar </button>
+                  <button class="btn btn-danger" (click)="ver_cancelar_servicio_especial(n,cancelar_servicio) ">Cancelar </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+                   <!-- ***********************************************************ventana para ver el mapa
+ ****************************************************************************************************************************************-->
+ <ng-template #mapa let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">Mapa Popayán</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17">
+        <agm-marker [latitude]="lat" [longitude]="lng"></agm-marker>
+        <agm-marker [latitude]="lat_mensajero" [longitude]="lng_mensajero"></agm-marker>
+      </agm-map>
+    </div>
+    <div class="modal-footer">
+  
+    </div>
+  </ng-template>
+  <!-- ******************************************************fin de la ventana del mapa-->
+        <!-- este es el modal del mensajero que lleva el servicio-->
+        <ng-template #modalvermensajerodelservicio let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title">Mensajero</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <h2>Datos Mensajero
+            </h2>
+            <input class="form-control" type="text" placeholder="Codigo" readonly="true" [(ngModel)]="mensajero_especial.codigo" />
+            <br />
+            <input class="form-control" type="text" placeholder="Telefono" [(ngModel)]="mensajero_especial.telefono" />
+            <br />
+            <input class="form-control" type="text" placeholder="Nombre " [(ngModel)]="mensajero_especial.nombre" />
+            <br />
+            <input class="form-control" type="text" placeholder="Placa" [(ngModel)]="mensajero_especial.placa" />
+            <br />
+            <input class="form-control" type="text" placeholder="Calificacion" readonly="true" [(ngModel)]="mensajero_especial.calificacion"
+            />
+          </div>
+          <div class="modal-footer">
+          </div>
+        </ng-template>
+
+        <!-- *****************************************ventana emergente para ver detalles de pedido
+          ************************************************************************************************************************-->
+        <ng-template #modal_pedido_especial let-c="close" let-d="dismiss">
+          <div class="modal-dialog">
+            <div class="modal-header">
+              <h4 class="modal-title">Detalles Usuario</h4>
+              <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Nombre</div>
+                  <input class="form-control" type="text" id="nombre" placeholder="Nombre del usuario" [(ngModel)]="pedido_especial.nombre"
+                         readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Telefono</div>
+                  <input class="form-control" type="text" placeholder="Telefono " [(ngModel)]="pedido_especial.telefono" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Direccion Final</div>
+                  <input class="form-control" type="text" placeholder="Direccion Final " [(ngModel)]="pedido_especial.dir_final" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Valor viaje</div>
+                  <input class="form-control" type="text" placeholder="Valor viaje " [(ngModel)]="pedido_especial.valor_pedido" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Comentarios del servicio</div>
+                  <input class="form-control" type="text" placeholder="Comentarios " [(ngModel)]="pedido_especial.comentario" readonly="true" />
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon" style="width: 200px">Califiacion del servicio</div>
+                  <input class="form-control" type="text" placeholder="Califiacion " [(ngModel)]="pedido_especial.calificacion" readonly="true" />
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+          </div>
+        </ng-template>
+        
+        <!-- **********************************************************ventana para borrar servicio
+  **********************************************************************************************************************************************-->
+  <ng-template #borrar_servicio let-c="close" let-d="dismiss">
+    <div class="modal-header">
+      <h4 class="modal-title">Borrar Servicio</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="input-group">
+          <h6>¿SEGURO DESEA BORRAR ESTE SERVICIO?</h6>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary btn-sm btn-block " (click)="borrar_servicio_especial()" (click)="c('Close click')">Si</button>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger btn-sm btn-block " (click)="c('Close click')">NO</button>
+    </div>
+  </ng-template>
+  <!--*****************************************************fin de la ventana para cancelar servicio-->
+
+        <!-- **********************************************************ventana para borrar servicio
+  **********************************************************************************************************************************************-->
+        <ng-template #cancelar_servicio let-c="close" let-d="dismiss">
+          <div class="modal-header">
+            <h4 class="modal-title">Cancelar Servicio</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <div class="input-group">
+                <h6>¿SEGURO DESEA CANCELAR ESTE SERVICIO?</h6>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-primary btn-sm btn-block " (click)="cancelar_servicio_especial()" (click)="c('Close click')">OK</button>
+          </div>
+        </ng-template>
+        <!--*****************************************************fin de la ventana para cancelar servicio-->
+      </ng-template>
+    </ngb-tab>
+
+    <!-- *********************************************INICIO DE LA PESTAÑA MENSAJEROS ESPECIALES
+    *******************************************************************************************************************-->
+    <ngb-tab title="Mensajero Especial" *ngIf="mensajeros_carros">
+      <ng-template ngbTabContent>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroSegunEstado('verificar')">Mensajeros para verificar</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroSegunEstado('nuevo')">Mensajeros Nuevos</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroSegunEstado('bloqueado')">Mensajeros Bloqueados</button>
+        <button class="btn-primary btn-sm" href="#" (click)="getMensajeroSegunEstado('activo')">Mensajeros Activos</button>
+        <div class="row">
+          <div class="col-md-5">
+            <h2>Mensajeros
+            </h2>
+            <div class="table-responsive">
+              <table class="table-sm table table table-condensed table-hover table table-striped">
+                <thead class="thead-primary">
+                  <tr>
+                    <th class="warning">#</th>
+                    <th class="warning">estado</th>
+                    <th class="warning">nombre</th>
+                    <th class="warning">placa</th>
+                    <th class="warning">Detalles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor ="let n of mensajero_ver; let i='index'">
+                    <td>{{i+1}}</td>
+                    <td>{{n.estado}}</td>
+                    <td>{{n.nombre}}</td>
+                    <td>{{n.placa}}</td>
+                    <td>
+                      <button type="button" class="btn btn-info" href="#" (click)=" VerifivarMensajeroEspecial(n)">Ver</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+          <div class="col-md-7">
+            <h2>Detalles del Mensajero
+            </h2>
+            <div class="form-group">
+                <div>
+                    <img id="img" class="image" height="100px" width="100px" [src]="urlimgPerfil | async" draggable="true">
+                  </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Nombre</div>
+                <input class="form-control" type="text" placeholder="Nombre" [(ngModel)]="mensajero_especial.nombre" #inputnombredetallescarro (keyup)="primeraMayuscula(inputnombredetallescarro)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Teléfono</div>
+                <input class="form-control" type="text" id="Teléfono" placeholder="Teléfono " [(ngModel)]="mensajero_especial.telefono" readonly="true"
+                />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon " (click)="DescargarFoto('foto_tarjeta1',mensajero_especial.codigo,verfoto)" style="width: 200px">Placas</div>
+                <input class="form-control" type="text" placeholder="Placas " [(ngModel)]="mensajero_especial.placa" #inputplacadetallescarro (keyup)="todoMayuscula(inputplacadetallescarro)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Estado mensajero</div>
+                <select class="form-control form-control-sm" [(ngModel)]="mensajero_especial.estado">
+                  <option>activo</option>
+                  <option>bloqueado</option>
+                  <option>subir_imagenes</option>
+                  <option>verificar</option>
+                </select>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" (click)="DescargarFoto('foto_seguro1',mensajero_especial.codigo,verfoto)" style="width: 200px">Fecha Seguro</div>
+                <input class="form-control" placeholder="Fecha Seguro " placement="left" type="text" #drp="bsDatepicker" bsDatepicker [(ngModel)]="mensajero_especial.fecha_seguro"
+                [(bsValue)]="mensajero_especial.fecha_seguro" value="{{ mensajero_especial.fecha_seguro | date:'yyyy-MM-dd' }}"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" (click)="DescargarFoto('foto_licencia1',mensajero_especial.codigo,verfoto)" style="width: 200px">Fecha Cumpleaños</div>
+                <input class="form-control" placeholder="Cumpleaños" type="text" placement="left" #drp="bsDatepicker" bsDatepicker [(ngModel)]="mensajero_especial.birth_day"
+                [(bsValue)]="mensajero_especial.birth_day" value="{{ mensajero_especial.birth_day | date:'yyyy-MM-dd' }}"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Modelo vehículo</div>
+                <input class="form-control" placeholder="modelo" [(ngModel)]="mensajero_especial.modelo_vehiculo" #inputmodelodetallescarro (keyup)="primeraMayuscula(inputmodelodetallescarro)" />
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Marca vehículo</div>
+                <input class="form-control" placeholder="marca" [(ngModel)]="mensajero_especial.marca" #inputmarcadetallescarro (keyup)="todoMayuscula(inputmarcadetallescarro)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Color vehículo</div>
+                <input class="form-control" placeholder="color" [(ngModel)]="mensajero_especial.color" #inputcolordetallescarro (keyup)="primeraMayuscula(inputcolordetallescarro)"/>
+              </div>
+              <div class="input-group">
+                <div class="input-group-addon" style="width: 200px">Calificacion</div>
+                <input class="form-control" placeholder="calificacion" [(ngModel)]="mensajero_especial.calificacion " />
+              </div>
+              <hr />
+              <div class="row">
+                <div class="col-md-6">
+                  <button class="btn btn-warning btn-sm btn-block" href="#" (click)="cancelar()" (click)="c('Close click')">Cancelar</button>
+                </div>
+                <div class="col-md-6">
+                  <button class="btn btn-primary btn-sm btn-block" href="#" (click)="crearMensajeroEspecial()" (click)="c('Close click')">
+                    Guardar </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-tab>
+
+    <!--//********************************************modal para ver la foto
+    *******************************************************************************************************************-->
+
+    <ng-template #verfoto let-c="close" let-d="dismiss" >
+      <div class="modal-header">
+        <h4 class="modal-title">Imagen</h4>
+        <button class="btn btn-info btn-sm btn-block"(click)="CambiarFoto(mensajero_especial.codigo)">CAMBIAR FOTO</button>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-content" draggable="true">
+        <div>
+          <img id="img" [@rotatedState]='state'class="image-responsive" [src]="urlimg | async" draggable="true">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <hr />
+        <button class="btn btn-info btn-sm btn-block"(click)="rotate()">Rotar imagen izquierda</button>
+        <button class="btn btn-info btn-sm btn-block"(click)="rotateDer()">Rotar imagen derecha</button>
+        <button class="btn btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">OK</button>
+      </div>
+    </ng-template>
+
+    <ngb-tab title="Gestion Mensajero Especial" *ngIf="mensajeros_carros">
+      <ng-template ngbTabContent >
+        Ingrese el rango de fechas que desea buscar
+        <div class=" col-md-7 form-group">
+          <div class="form-group">
+            <div class="input-group">
+              <input class="form-control" type="text" #drp="bsDaterangepicker" bsDaterangepicker [(ngModel)]="bsRangeValue" />
+              <div class="input-group-btn">
+                <button class="btn btn-primary" (click)="filtraServiciosPorFecha()">Buscar</button>
+              </div>
+              <div class="input-group-btn">
+                <button class="btn btn-primary" (click)="gettodosespeciales()">Cargar Servicios</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="table-responsive">
+              <table class="table-sm table table table-condensed table-hover table table-striped">
+                <thead class="thead-primary">
+                  <tr>
+                    <th class="warning">#</th>
+                    <th class="warning">Fecha</th>
+                    <th class="warning">Codigo</th>
+                    <th class="warning">Placa</th>
+                    <th class="warning">Estado </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let n of pedidos_filtrados_por_fecha; let i='index'">
+                    <td>{{i+1}}</td>
+                    <td>{{n.fecha_pedido}}</td>
+                    <td>{{n.codigo_mensajero}}</td>
+                    <td>{{n.placa}}</td>
+                    <td>{{n.dir_inicial}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <div class="input-group-addon">Servicios Cancelados</div>
+              <input class="form-control" type="number" placeholder="Cancelados" [(ngModel)]="servicios_cancelados" readonly="true" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Servicios Completados</div>
+              <input class="form-control" type="number" placeholder="Terminados" [(ngModel)]="servicios_terminados" readonly="true" />
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Servicios Convenios</div>
+              <input class="form-control" type="number" placeholder="Terminados" [(ngModel)]="total_convenios" readonly="true" />
+            </div>
+            <div class="table-responsive">
+              <table class="table-sm table table table-condensed table-hover table table-striped">
+                <thead class="thead-primary">
+                  <tr>
+                    <th class="warning">Placa</th>
+                    <th class="warning">Servicios Realizados</th>
+                    <th class="warning">Convenios Realizados</th>
+                    <th class="warning">Total a Pagar</th>
+                    <th class="warning">Detalles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let n of array_servicios">
+                    <td>{{n.placa}}</td>
+                    <td>{{n.servicios}}</td>
+                    <td>{{n.convenios}}</td>
+                    <td>{{n.saldo}}</td>
+                    <td>
+                      <button type="button" class="btn btn-info" (click)="verServiciosMensajero(n, serviciosmensajero)">Ver</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="input-group">
+              <div class="input-group-addon">Total Servicios</div>
+              <input class="form-control" type="number" placeholder="Terminados" [(ngModel)]="valor_total" readonly="true" />
+            </div>
+          </div>
+        </div>
+        <!--//********************************************modal para agregr valor
+    *******************************************************************************************************************-->
+
+        <ng-template #serviciosmensajero let-c="close" let-d="dismiss">
+
+          <div class="modal-header">
+            <h4 class="modal-title">Servicios Relizados</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-content">
+            <div class="table-responsive">
+              <table class="table-sm table table table-condensed table-hover table table-striped">
+                <thead class="thead-primary">
+                  <tr>
+                    <th class="warning">#</th>
+                    <th class="warning">Fecha</th>
+                    <th class="warning">Direccion</th>
+                    <th class="warning">Cliente</th>
+                    <th class="warning">Convenio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let n of detalles_servicios; let i='index'">
+                    <td>{{i+1}}</td>
+                    <td>{{n.fecha_pedido}}</td>
+                    <td>{{n.dir_inicial}}</td>
+                    <td>{{n.nombre}}</td>
+                    <td *ngIf="n.convenio">Si</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="input-group">
+                <div class="input-group-addon">Total a Pagar</div>
+                <input class="form-control" type="number" placeholder="Total" [(ngModel)]="total_a_pagar" readonly="true" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <hr />
+            <button class="btn btn-warning btn-sm btn-block" href="#" (click)="c('Close click')">OK</button>
+            <hr />
+            <button class="btn btn-warning btn-sm btn-block" href="#" (click)="downloadCSV()">Descargar</button>
+          </div>
+
+        </ng-template>
+
+        <!-- ****************************************************fin ventana emergente-->
+      </ng-template>
+    </ngb-tab>
+    <!-- ****************************************************GESTION DE NUMEROS DE MENSAJEROS-->
+    <ngb-tab title="Numeros Telefonicos Mensajeros"  *ngIf="mensajeros_carros">
+      <ng-template ngbTabContent>
+          <div class="row">
+              <div>
+                <h2>Todos los Mensajeros
+                </h2>
+                <div class="table-responsive">
+                  <table class="table-sm table table table-condensed table-hover table table-striped">
+                    <thead class="thead-primary">
+                      <tr>
+                        <th class="warning">#</th>
+                        <th class="warning">Nombre</th>
+                        <th class="warning">Numero</th>
+                        <th class="warning">Placa</th>
+                        <th class="warning">Estado</th>
+                        <th class="warning">Ultima conexión</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let n of todos_mensajero_especial; let i='index'">
+                        <td>{{i+1}}</td>
+                        <td>{{n.nombre}}</td>
+                        <td>{{n.telefono}}</td>
+                        <td>{{n.placa}}</td>
+                        <td>{{n.estado}}</td>
+                        <td>{{n.ultima_conexion}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+          </div>
+      </ng-template>
+    </ngb-tab>
+    <ngb-tab title="Numeros Telefonicos Usuarios" *ngIf="mensajeros_carros">
+        <ng-template ngbTabContent>
+            <div class="row">
+                <hr />
+                <button class="btn btn-warning btn-sm btn-block" href="#" (click)="CargarUsuarios()">Cargar Usuarios</button>
+                <hr />
+                <div>
+                  <h2>Todos los Usuarios
+                  </h2>
+                  <div class="table-responsive">
+                    <table class="table-sm table table table-condensed table-hover table table-striped">
+                      <thead class="thead-primary">
+                        <tr>
+                          <th class="warning">#</th>
+                          <th class="warning">Nombre</th>
+                          <th class="warning">Numero</th>
+                          <th class="warning">Email</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let n of todos_los_usuarios; let i='index'">
+                          <td>{{i+1}}</td>
+                          <td>{{n.nombre}}</td>
+                          <td>{{n.telefono}}</td>
+                          <td>{{n.email}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+            </div>
+        </ng-template>
+      </ngb-tab>
+
+      <!-- ******************** pestaña para hacer seguimiento a los conductores-->
+      <ngb-tab title="Seguimiento Conductores"  *ngIf="mensajeros_carros">
+        <ng-template ngbTabContent>
+          <div class="row">
+              <hr />
+              <button class="btn btn-warning btn-sm btn-block" href="#" (click)="getMensajerosConectados()">Cargar</button>
+              <hr />
+              <div class="col-md-6">
+                <h2>Todos los Mensajeros Conectados
+                </h2>
+                <div class="table-responsive">
+                  <table class="table-sm table table table-condensed table-hover table table-striped">
+                    <thead class="thead-primary">
+                      <tr>
+                        <th class="warning">#</th>
+                        <th class="warning">Nombre</th>
+                        <th class="warning">Numero</th>
+                        <th class="warning">Hora de conexion</th>
+                        <th class="warning">Seguir</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let n of mensajero_especial_conectado; let i='index'">
+                        <td>{{i+1}}</td>
+                        <td>{{n.nombre}}</td>
+                        <td>{{n.telefono}}</td>
+                        <td>{{n.hora_conexion}}</td>
+                        <td (click)="ver_ubicacion_mensajero(n)">ver</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17">
+                  <agm-marker [latitude]="lat_mensajero" [longitude]="lng_mensajero"></agm-marker>
+                </agm-map>
+              </div>
+          </div>
+      </ng-template>
+      </ngb-tab>
+
+      <ngb-tab title="Pruebas">
+        <ng-template ngbTabContent>
+            <app-pruebas #pruebas></app-pruebas>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab title="WhatsApp">
+        <ng-template ngbTabContent>
+            <app-whatsapp #whatsapp></app-whatsapp>
+        </ng-template>
+      </ngb-tab>
+  </ngb-tabset>
+
+ </div> 
+ <dir *ngIf= "!( usuario | async) ">
+  <div class="containerlogin">
+    <div class="row">
+      <div class="col-sm-6 col-md-4 col-md-offset-4">
+        <div class="account-wall">
+
+          <div>
+            <img class="profile-img" src= "favicon.ico">
+            <form #formData="ngForm"(ngSubmit) ="onSubmit(formData)" class="form-signin">
+              <input class="form-control" type="email" aria-describedby="emailHelp" name="email" placeholder="Email" [(ngModel)]="textEmail"
+                required>
+              <input class="form-control" type="password" name="password" placeholder="Constraseña" [(ngModel)]="textPass" required>
+              <input type="submit" class="btn btn-lg btn-default btn-block" href="#" value="Iniciar Sesion" (click)="login()" />
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</dir>

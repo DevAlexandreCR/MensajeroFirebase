@@ -1,0 +1,136 @@
+<div class="container-fluid" id="banner" >
+  <h1 class="text-lg-center p-b-1 m-b-1" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">
+    MensajeroApp</h1>
+  <h4  style="color: rgba(49, 53, 53, 0.623); text-align: center">
+    Transporte, compras y mandados
+  </h4>
+</div>
+<div class= "container-fluid esquina ">
+   <a *ngIf = "isAndroid"  href="https://play.google.com/store/apps/details?id=com.mensajero.equipo.mensajero" target="_blank"> <button id="descargaandroid" class= "btn btn-primary shadow" >Descarga la app android</button></a> 
+   <a *ngIf = "isiOS" > <button id="descargaios" class= "btn btn-info shadow" > Próximamanete en AppStore</button></a> 
+   <a *ngIf = "isPC" routerLink="../portal" > <button id="descargapc" class= "btn btn-primary shadow "> Píde aquí</button></a> 
+  </div>
+  <div class="container bann">
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3 shadow" routerLink="/portal">
+                <div class="row no-gutters">
+                  <div class="col-md-4">
+                    <img src="../assets/moto.png" class="card-img" alt="..." style="padding: 10%">
+                    <p class="titulo-card">Domicilios</p>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="card-body">
+                      <h5 class="card-title">Domicilios</h5>
+                      <p class="card-text">Pide cómida y más</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      <div class="col">
+          <div class="card mb-3 shadow" routerLink="/home/conoce-mensajero">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="../assets/carro.png" class="card-img" alt="..." style="padding: 10%">
+                  <p class="titulo-card">Transporte</p>
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Mensajero Go</h5>
+                    <p class="card-text">Viaja tranquilo</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+      <div class="col">
+          <div class="card mb-3 shadow" routerLink="/home/conoce-mensajero">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="../assets/bike.png" class="card-img" alt="..." style="padding: 10%">
+                  <p class="titulo-card">Mandados</p>
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Mensajero Bike</h5>
+                    <p class="card-text">Mandados</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+      <div class="col">
+          <div class="card mb-3 shadow" routerLink="/portal/main/registro">
+              <div class="row no-gutters">
+                <div class="col-md-4">
+                  <img src="../../../assets/comida.png" class="card-img" alt="..." style="padding: 10%">
+                  <p class="titulo-card">Empresas</p>
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Negocios</h5>
+                    <p class="card-text">Registra tu negocio!</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <p style="text-align: center; font-size: 20px">¿Qué quieres hoy?</p>
+          <div class="row " style="max-width: 100%; margin-top: 50px; text-align: center">
+              <div class="mx-auto" style="margin: auto">
+                  <div class="card shadow " style="width: 28rem; margin-bottom: 30px;">
+                      <img src="../../../../../../assets/rest.png" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <h3 class="card-title" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">Comidas</h3>
+                        <p class="card-text">Pide en tu restaurante favorito y recíbelo en minutos!</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mx-auto" style="margin: auto">
+                  <div class="card shadow" style="width: 28rem; margin-bottom: 30px;">
+                      <img src="../../../../../../assets/farmacia.png" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <h3 class="card-title" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">Farmacia</h3>
+                        <p class="card-text">
+                          Disponibles 24 horas
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mx-auto" style="margin: auto">
+                  <div class="card shadow" style="width: 28rem; margin-bottom: 30px;">
+                      <img src="../../../../../../assets/licores.png" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <h3 class="card-title" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">Licores</h3>
+                        <p class="card-text">Se acabaron las frias? ya no es un problema!</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="mx-auto" style="margin: auto">
+                  <div class="card shadow" style="width: 28rem; margin-bottom: 30px;">
+                      <img src="../../../../../../assets/floristeria.png" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <h3 class="card-title" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">Detalles</h3>
+                        <p class="card-text">Sorprendela con un desayuno o un ramo de flores</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mx-auto" style="margin: auto">
+                  <div class="card shadow" style="width: 28rem; margin-bottom: 30px;">
+                      <img src="../../../../../../assets/mercado.png" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <h3 class="card-title" style=" font-family: bariol_bold; color: rgba(49, 53, 53, 0.623); text-align: center">Tiendas y mercado</h3>
+                        <p class="card-text">Compra desde una papitas con gaseosa hasta el mercado sin salir de casa</p>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+  </div>
+
+
+

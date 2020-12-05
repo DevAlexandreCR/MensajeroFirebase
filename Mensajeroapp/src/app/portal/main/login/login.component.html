@@ -1,0 +1,51 @@
+
+<div class="container shadow bg-light" style= "max-width: 500px; padding-top: 1em; border-radius: 10px;">
+<div class="container" style ="margin-top: 10%; ">
+  <form class="form-signin" style= "border-radius: 10px;">
+    <img class="mb-4" src="../../../../assets/logo.png" alt="" width="80" height="80">
+    <h1 class="h3 mb-3 font-weight-normal">Inicia Sesión</h1>
+    <label for="inputEmail" class="sr-only">Email </label>
+    <input type="email" id="inputEmail" name = "email" class="form-control" placeholder="Email " [(ngModel)]= "email" required="" autofocus="">
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" id="inputPassword" name = "pass" class="form-control" placeholder="Password" required="" [(ngModel)]= "pass">
+    <div class="checkbox mb-3">
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit" (click)="login()">Iniciar Sesión</button>
+    <div>
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModalCenter">
+            <i><span class="mt-5 mb-3 text-muted"> Recuperar Contraseña</span></i>
+          </button>
+    </div>
+    <a routerLink="../registro"><i><span class="mt-5 mb-3 text-muted">No tienes cuenta?. Crea una aquí</span></i></a>
+    <p class="mt-5 mb-3 text-muted">© MensajeroApp 2018-2019</p>
+  </form>
+</div>
+<div id="snackbar">{{error}}</div>
+<!-- Button trigger modal -->
+
+  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle">Recuperar contraseña</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <div class="control-label">Ingrese su email</div>
+                <input class="form-control form-control-sm" type="email" placeholder="Email" [(ngModel)]="email" />
+                <small>*enviaremos un correo con las instrucciones para restablecer su password"</small>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <button type="button" class="btn btn-primary" *ngIf ="email != null && email.length > 4"data-dismiss="modal" (click) = "recuperarConstrasena(email)">Enviar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

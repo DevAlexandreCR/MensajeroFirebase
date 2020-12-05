@@ -1,0 +1,87 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../../../../assets/bariol_bold.otf) format("opentype"); 
+}
+
+.list-group-item {
+    width: auto;
+    padding: 2%;
+    border-radius: 5px;
+}
+
+.mr-3 {
+    width: 64px;
+    border-radius: 10px
+}
+
+.list-group{
+    flex-direction: row;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.card-text {
+     font-size: 10px;
+}
+
+.ver-empresa{
+    width: 100%;
+}
+
+.ellipsis{
+    font-size: 10pt;
+    width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.media:hover{
+    cursor: pointer;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transform: scale(1.05);
+}
+
+.media{
+    border-radius: 10px;
+    padding: 5px;
+    margin: 10px;
+    transition: transform .1s;
+}
+
+.collapse{
+    text-align: left;
+    max-width: 100%;
+    margin-left: 2%;
+    margin-right: 2%;
+}
+
+#empresas-list{
+    width: auto;
+    margin: auto;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: .5%;
+}
+
+.rest{
+    background-color: transparent;
+    padding: 0;
+    display: inline-block;
+    margin-right: 10px;
+    transition: transform .1s
+}
+
+.rest:hover{
+    cursor: pointer;
+    transform: scale(1.04)
+}
+
+.container-fluid{
+    text-align: center;
+}
+

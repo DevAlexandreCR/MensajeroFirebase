@@ -1,0 +1,31 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../../../assets/bariol_bold.otf) format("opentype"); 
+}
+
+.text-area {
+    border-top: 0ch;
+    border-left: 0ch;
+    border-right: 0ch;
+    border-bottom-color: cadetblue;
+    background-color: whitesmoke;
+    overflow-y: auto;
+    height: 30px;
+}
+
+.card-img-top {
+    width: 200px;
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 20px;
+    transition: transform .1s
+}
+
+.card-img-top:hover{
+    cursor: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    transform: scale(1.5);
+}

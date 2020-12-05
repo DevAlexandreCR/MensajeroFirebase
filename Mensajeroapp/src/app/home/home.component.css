@@ -1,0 +1,16 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../assets/bariol_bold.otf) format("opentype"); 
+}
+*{
+    font-family:bariol_bold;
+}
+
+
+.navbar{
+    background-color: #2b96d3;
+    padding-left: 3%;
+    padding-right: 3%;
+}

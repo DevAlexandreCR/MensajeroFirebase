@@ -1,0 +1,398 @@
+<div class="container-fluid">
+  <div class="banner">
+      <div class="titulos"> Recomendados </div> 
+      <app-list-empresas 
+      [restaurantes] = "restaurantes"
+      [farmacias] = "farmacias"
+      [licores] = "licores"
+      [supermercados] = "supermercados"
+      [floristerias] = "floristerias"
+      [categorias] = "categorias"
+      ></app-list-empresas>
+  </div>
+  <div class="row">
+    <div class="col">
+        <div class="titulos"> Pide lo que quieras</div> 
+    <div class= "container shadow" style= "background-color:white; border-radius: 10px; padding-top: 1em; padding-bottom: 1em; width: 100%;">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" (click)= "miUbicacion('servicio_mensajero')" id="pedido-tab" data-toggle="tab" href="#pedido" role="tab" aria-controls="pedido" aria-selected="true">
+                Mandados
+                <img src="../../../../../assets/mensajerobike.jpg" width="30" height="30" alt="">
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pedido_especial-tab" (click)= "miUbicacion('servicio_mensajero_especial')" data-toggle="tab" href="#pedido_especial" role="tab" aria-controls="profile" aria-selected="false">Viaja tranquilo
+                  <img src="../../../../../assets/mensajerogo.jpg" width="30" height="30" alt="">
+              </a>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContentPedidos">
+            <div class="tab-pane fade show active" id="pedido" role="tabpanel" aria-labelledby="pedido-tab">
+        <div class="form " style= "max-height: auto;">
+          <div class="form-group">
+            <label for= "tiposervicio" class="control-label">Tipo Servicio</label>
+            <select (change)="cambiartipo(tipo_pedido);" class="form-control form-control-sm"id ="tiposervicio"[(ngModel)]="tipo_pedido">
+              <option *ngIf= "es_empresa">Domicilios</option>
+              <option *ngIf= "!es_empresa">Compras-Pedir Domicilios</option>
+              <option *ngIf= "es_empresa">Compras</option>
+              <option >Encomiendas</option>
+              <option > Pagos de Facturas-Trámites</option>
+            </select>
+          </div>
+              <div class="form-group" id= "div_cuantos">
+                <label class="control-label">Cuantos Mensajeros?</label>
+                <select class="form-control form-control-sm" [(ngModel)]="pedido.cuantos_mensajeros">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div>      
+              <div class="form-group"  id= "dir_inicial_div">
+                  <label class="control-label">{{label_ini_titulo_segun_pedido}}</label>
+                  <input class="form-control form-control-sm" type="text" id= "input_dir_inicial_moto" placeholder= "Direccion o nombre de lugar" autocomplete="off" [(ngModel)]="pedido.dir_inicial" />
+                  <div id="results_inicial_moto" class="pac-container"></div>
+                  <small>{{label_ini_descrp_segun_pedido}}</small>
+                </div> 
+                <div class="form-group" id= "dir_final_div">
+                    <label class="control-label">{{label_fin_titulo_segun_pedido}}</label>
+                    <input class="form-control form-control-sm" type="text" id= "input_dir_final_moto" placeholder= "Direccion o nombre de lugar" autocomplete="off"  [(ngModel)]="pedido.dir_final" />
+                    <div id="results_final_moto" class="pac-container"></div>
+                    <small>{{label_fin_descrp_segun_pedido}}</small>
+                  </div>           
+                <div class="form-group">
+                  <label class="control-label">Qué debe tener el mensajero?</label>
+                  <input class="form-control form-control-sm" type="text" placeholder="Condicion (opcional)" [(ngModel)]="pedido.condicion" />
+                  <small>*Agregue aquí una condición. ejemplo: "llevar sencillo" o "tener cajón para pizza, etc..."</small>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Qué debe hacer el mensajero</label>
+                    <input class="form-control form-control-sm" type="text" placeholder="Descripción del servicio (especialmente para compras, trámites o encomiendas)" [(ngModel)]="pedido.comentario" />
+                    <small>*Agregue aquí una descripción. ejemplo: "Comprar 1 galón de aceite y llevarlo a..."</small>
+                  </div>
+              <div class="container" style = "text-align: center;">
+                <button type="button" class="btn btn-primary shadow" id="enviar" disabled style= "width: 80%; height: 30%" (click)= "SolicitarServicio()"
+                data-toggle="tooltip" data-placement="bottom" title="Solicita servicio">Solicitar</button>
+                <div class="progress" *ngIf = "cancelar_envio">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressenviar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                </div>
+                <div> <small *ngIf = "cancelar_envio" style="color: red">Enviando servicio...</small></div>
+                <button class="btn btn-danger shadow" *ngIf = "cancelar_envio" style= "width: 40%; height: auto" (click)= "CancelarEnvioServicio('progressenviar')">Cancelar Envío</button>
+              </div>
+        </div>
+        </div>
+        <div class="tab-pane fade" id="pedido_especial" role="tabpanel" aria-labelledby="pedido_especial-tab">
+            <div class="form " style= "max-height: auto; margin-top: 10px;">              
+                      <div class="form-group">
+                        <label class="control-label">Direccion de origen</label>
+                        <input class="form-control form-control-sm" type="text" id= "input_dir_inicial" autocomplete="off" placeholder="Dirección inicial" [(ngModel)]="pedido_especial.dir_inicial" />
+                        <div id="results_inicial" class="pac-container"></div>
+                        <small>*Dirección donde te recogrerá el mensajero"</small>
+                      </div>
+                      <div class="form-group">
+                          <label class="control-label">Dirección de destino</label>
+                          <input class="form-control form-control-sm" type="text" id= "input_dir_final" autocomplete="off" placeholder="Dirección de destino (opcional)" [(ngModel)]="pedido_especial.dir_final" />
+                          <div id="results_final" class="pac-container"></div>
+                          <small>*Dirección a donde vas (puedes dejarla vacía)"</small>
+                        </div>
+                    <div class="container" style = "text-align: center;">
+                      <button type="button" class="btn btn-primary shadow" id="enviarespecial" disabled style= "width: 80%; height: 30%" (click)= "SolicitarServicioEspecial()"
+                      data-toggle="tooltip" data-placement="bottom" title="Solicita servicio">Solicitar</button>
+                      <div class="progress" *ngIf = "cancelar_envio">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressenviarespecial" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                      </div>
+                      <div> <small *ngIf = "cancelar_envio" style="color: red">Enviando servicio...</small></div>
+                      <button class="btn btn-danger shadow" *ngIf = "cancelar_envio" style= "width: 40%; height: auto" (click)= "CancelarEnvioServicio('progressenviarespecial')">Cancelar Envío</button>
+                    </div>
+              </div>
+        </div>
+      </div>
+      </div>
+      <hr>
+      <div class="container shadow" *ngIf = "pedidos_especiales_en_curso.length > 1" style= "background-color:white; margin-top: 15px; max-height: auto;width:100%;
+        overflow-y:auto; border-radius: 10px; padding-top: 1em; padding-bottom: 1em; ">
+         <div class="container" style= "text-align: center"><h2>Servicios en curso</h2></div>
+         <ol class="list " *ngFor= "let n of pedidos_especiales_en_curso">
+             <li class="list-group-item list-group-item-action shadow" aria-disabled="true" >
+                 <div class="row align-items-center" style="width: 100%; text-align: left;">
+                   <div class="col ">
+                     <img  src="../../../../assets/logo.png" class="card-img-top" alt="..." style="width:40px; height: 40px;">
+                   </div>
+                   <div class="col">
+                     <p style= "font-size: 12px;"><strong>{{n.fecha_pedido}}</strong></p>  
+                   </div>
+                   <div class="col ">
+                       <p>{{n.estado_pedido}}</p>  
+                     </div>
+                     <div class="col">
+                         <button class="btn btn-primary shadow" *ngIf= "n.estado_pedido !== 'sin_movil_asignado'" (click)="SeleccionarServicio(n)">Ver Servicio</button>
+                         <div class="progress" *ngIf = "n.estado_pedido === 'sin_movil_asignado'">
+                           <div class="progress-bar progress-bar-striped progress-bar-animated" style= "width: 100%" role="progressbar" ></div>
+                         </div>
+                         <div *ngIf = "n.estado_pedido === 'sin_movil_asignado'"><strong style="color: red; font-size: 14px;">Buscando Mensajero...</strong></div>
+                       </div>
+                 </div>
+             </li>
+           </ol>
+       </div>
+            <div class="container shadow" *ngIf = "pedidos_en_curso.length > 1" style= "background-color:white; margin-top: 15px; max-height: auto;width:100%;
+             overflow-y:auto; border-radius: 10px; padding-top: 1em; padding-bottom: 1em; ">
+              <div class="container" style= "text-align: center"><h2>Servicios en curso</h2></div>
+              <ol class="list " *ngFor= "let n of pedidos_en_curso">
+                  <li class="list-group-item list-group-item-action shadow" aria-disabled="true" >
+                      <div class="row align-items-center" style="width: 100%; text-align: left;">
+                        <div class="col ">
+                          <img  src="../../../../assets/logo.png" class="card-img-top" alt="..." style="width:40px; height: 40px;">
+                        </div>
+                        <div class="col">
+                          <p style= "font-size: 12px;"><strong>{{n.fecha_pedido}}</strong></p>  
+                        </div>
+                        <div class="col ">
+                            <p>{{n.estado_pedido}}</p>  
+                          </div>
+                          <div class="col">
+                              <button class="btn btn-primary shadow" *ngIf= "n.estado_pedido !== 'sin_movil_asignado'" (click)="SeleccionarServicio(n)">Ver Servicio</button>
+                              <div class="progress" *ngIf = "n.estado_pedido === 'sin_movil_asignado'">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" style= "width: 100%" role="progressbar" ></div>
+                              </div>
+                              <div *ngIf = "n.estado_pedido === 'sin_movil_asignado'"><strong style="color: red; font-size: 14px;">Buscando Mensajero...</strong></div>
+                            </div>
+                      </div>
+                  </li>
+                </ol>
+            </div>
+            <div class="container shadow" *ngIf = "domicilios_en_curso.length > 1" style= "background-color:white; margin-top: 15px; max-height: auto;width:100%;
+              overflow-y:auto; border-radius: 10px; padding-top: 1em; padding-bottom: 1em; ">
+               <div class="container" style= "text-align: center"><h2>Domicilios en curso</h2></div>
+               <ol class="list " *ngFor= "let n of domicilios_en_curso">
+                   <li class="list-group-item list-group-item-action shadow" aria-disabled="true" >
+                       <div class="row" style="width: 100%; text-align: center;">
+                         <div class="col-2">
+                           <img  [src] ="n.empresa.url_foto_perfil" class="card-img-top" alt="..." style="width:40px; height: 40px;">
+                         </div>
+                         <div class="col-4">
+                           <p style= "font-size: 12px;"><strong>{{n.fecha_domicilio}}</strong></p>  
+                         </div>
+                         <div class="col-2">
+                             <p>{{n.estado}}</p>  
+                           </div>
+                           <div class="col-4">
+                             <div class="button-group">       
+                                <button class="btn btn-primary shadow"  (click)="VerDomicilio(n)">Detalles</button>                      
+                               <button type="button" class="btn btn-outline-dark " data-toggle="modal" data-target="#chatModal" 
+                              (click) = "VerDomicilio(n)">chat <span class="badge badge-success" *ngIf="n.chat != null">{{n.chat.length}}</span></button></div>                          
+                             </div>
+                       </div>
+                   </li>
+                 </ol>
+             </div>
+
+             <div class="container shadow "*ngIf = "pedidos_especiales_en_curso.length > 0"  style= "background-color: white; border-radius: 10px; padding-bottom: 1em; padding-top: 1em;">
+              <div class="container"  style="text-align: center;">
+                <h2>Detalles del servicio</h2>
+              </div>
+              <div class="row align-items-center"  >
+                <div class="col-6 col-sm-4 " style ="min-width: 300px;">
+                  <div class="container" style = "text-align: center; align-items: center;">
+                      <img class="rounded-circle shadow" [src]="img_perfil | async" id="foto_perfil"  width="150px" height="150px">
+                      <div>
+                    <label class="control-label" *ngIf= "pedido_seleccionado.estado_pedido !== 'sin_movil_asignado'">{{mensajero.nombre}}</label>
+                  </div>
+                  <div class="progress" *ngIf = "pedido_seleccionado.estado_pedido === 'sin_movil_asignado'">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated" style= "width: 100%" role="progressbar" ></div>
+                    </div>
+                    <div *ngIf = "pedido_seleccionado.estado_pedido === 'sin_movil_asignado'"><strong style="color: red; font-size: 14px;">Buscando Mensajero...</strong></div>
+                  </div>
+                </div>
+                <div class="col" >
+                  <div class=" container">
+                      <div class="input-group">
+                        <div class="input-group-addon">Estado Servicio</div>
+                        <label class="control-label">{{pedido_seleccionado.estado_pedido}}</label>
+                      </div>
+                      <div class="input-group">
+                        <div class="input-group-addon">Teléfono Mensajero</div>
+                        <label class="control-label"  *ngIf= "mensajero != null">{{mensajero.telefono}}</label>
+                      </div>  
+                      <div class="input-group">
+                      <div class="input-group-addon">Vehículo </div>
+                      <label class="control-label">{{info_moto}}</label>
+                    </div>
+                    <div class="container-fluid" style = "text-align: center;"  *ngIf= "pedido_seleccionado.estado_pedido != 'viaje_iniciado'">
+                        <button class="btn btn-danger shadow-sm" style= "width: 100%;"(click)= "CancelarServicio(pedido_seleccionado)">Cancelar servicio</button>
+                        <div class="progress" *ngIf = "cancelar_cancelacion">
+                          <div class="progress-bar progress-bar-striped progress-bar-animated"  id="progresscancelar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                        </div>
+                        <div> <small *ngIf = "cancelar_cancelacion" style="color: red">Cancelando servicio...</small></div>
+                        <button class="btn btn-danger shadow" *ngIf = "cancelar_cancelacion" style= "width: 40%; height: auto" (click)= "CancelarCancelacionServicio()">Detener</button>
+                      </div>
+                  </div>                
+                </div>
+              </div>
+              </div>
+   
+      <div class="container shadow "*ngIf = "pedidos_en_curso.length > 0"  style= "background-color: white; border-radius: 10px; padding-bottom: 1em; padding-top: 1em;">
+        <div class="container"  style="text-align: center;">
+          <h2>Servicio seleccionado</h2>
+        </div>
+        <div class="row align-items-center"  >
+          <div class="col-6 col-sm-4 " style ="min-width: 300px;">
+            <div class="container" style = "text-align: center; align-items: center;">
+                <img class="rounded-circle shadow" [src]="img_perfil | async" id="foto_perfil"  width="150px" height="150px">
+                <div>
+              <label class="control-label" *ngIf= "pedido_seleccionado.estado_pedido !== 'sin_movil_asignado'">{{mensajero.nombre}}</label>
+            </div>
+            <div class="progress" *ngIf = "pedido_seleccionado.estado_pedido === 'sin_movil_asignado'">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" style= "width: 100%" role="progressbar" ></div>
+              </div>
+              <div *ngIf = "pedido_seleccionado.estado_pedido === 'sin_movil_asignado'"><strong style="color: red; font-size: 14px;">Buscando Mensajero...</strong></div>
+            </div>
+          </div>
+          <div class="col" >
+            <div class=" container">
+                <div class="input-group" *ngIf= "tipo_servicio === 'servicio_mensajero'">
+                    <div class="input-group-addon">Tipo Servicio</div>
+                    <label class="control-label">{{pedido_seleccionado.tipo_pedido}}</label>
+                  </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Estado Servicio</div>
+                  <label class="control-label">{{pedido_seleccionado.estado_pedido}}</label>
+                </div>
+                <div class="input-group">
+                  <div class="input-group-addon">Teléfono Mensajero</div>
+                  <label class="control-label"  *ngIf= "mensajero != null">{{mensajero.telefono}}</label>
+                </div>  
+                <div class="input-group">
+                <div class="input-group-addon">Vehículo </div>
+                <label class="control-label">{{info_moto}}</label>
+              </div>
+              <div class="container-fluid" style = "text-align: center;"  *ngIf= "pedido_seleccionado.estado_pedido == 'en_curso'">
+                  <button class="btn btn-danger shadow-sm" style= "width: 100%;"(click)= "CancelarServicio(pedido_seleccionado)">Cancelar servicio</button>
+                  <div class="progress" *ngIf = "cancelar_cancelacion">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"  id="progresscancelar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                  </div>
+                  <div> <small *ngIf = "cancelar_cancelacion" style="color: red">Cancelando servicio...</small></div>
+                  <button class="btn btn-danger shadow" *ngIf = "cancelar_cancelacion" style= "width: 40%; height: auto" (click)= "CancelarCancelacionServicio()">Detener</button>
+                </div>
+            </div>                
+          </div>
+        </div>
+        </div>
+        <div class="container shadow "*ngIf = "domicilios_en_curso.length > 0"  style= "background-color: white; border-radius: 10px; padding-bottom: 1em; padding-top: 1em; margin-top: 1em;">
+          <div class="container"  style="text-align: center;">
+            <h2>Detalles del domicilio</h2>
+          </div>
+          <div class="row" style="text-align: center;" >
+            <div class="col" style ="min-width: 300px; text-align: center; width: ">
+              <div class="container" style = "text-align: center; align-items: center;">
+                  <img  class="rounded-circle shadow" [src]="domicilio_seleccionado.empresa.url_foto_perfil" id="foto_perfil_empresa"  width="150px" height="150px">
+                  <div>
+                <label class="control-label">{{domicilio_seleccionado.empresa.nombre}}</label>
+              </div>
+              </div>
+              <button type="button" class="btn btn-outline-dark " data-toggle="modal" data-target="#chatModal">chat 
+                <span class="badge badge-success" *ngIf="domicilio_seleccionado.chat != null">{{domicilio_seleccionado.chat.length}}</span>
+              </button>
+            </div>
+            <div class="col" >
+              <div class=" container">
+                  <div class="input-group">
+                    <div class="input-group-addon">Estado Domicilio</div>
+                    <label class="control-label">{{domicilio_seleccionado.estado}}</label>
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Descripción Pedido</div>
+                    <label class="control-label">{{domicilio_seleccionado.descripcion}}</label>
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Valor Domicilio</div>
+                    <label class="control-label">{{domicilio_seleccionado.valor_domicilio}}</label>
+                  </div>
+                  <div class="input-group">
+                    <div class="input-group-addon">Valor Pedido</div>
+                    <label class="control-label">{{domicilio_seleccionado.valor_pedido}}</label>
+                  </div>
+                  <div *ngIf= "domicilio_seleccionado.estado == 'despachado'" class="input-group">
+                    <div class="input-group-addon">Teléfono Mensajero</div>
+                    <label class="control-label"  *ngIf= "mensajero != null">{{mensajero.telefono}}</label>
+                  </div>  
+                  <div class="input-group" *ngIf= "domicilio_seleccionado.estado == 'despachado'">
+                  <div class="input-group-addon">Vehículo </div>
+                  <label class="control-label">{{info_moto}}</label>
+                </div>
+                <div class="container-fluid" style = "text-align: center;"  *ngIf= "domicilio_seleccionado.estado == 'pendiente'">
+                    <button class="btn btn-danger shadow-sm" style= "width: 100%;" (click)="CancelarDomicliio(domicilio_seleccionado)">Cancelar</button>
+                    <div class="progress" *ngIf = "cancelar_cancelacion">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated"  id="progresscancelar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" ></div>
+                    </div>
+                    <div> <small *ngIf = "cancelar_cancelacion" style="color: red">Cancelando servicio...</small></div>
+                    <button class="btn btn-danger shadow" *ngIf = "cancelar_cancelacion" style= "width: 40%; height: auto" (click)= "CancelarCancelacionServicio()">Detener</button>
+                  </div>
+              </div>                
+            </div>
+          </div>
+          </div>
+
+          <!--*********************************************************** MODAL CHAT ***********************************************************************-->
+
+<div class="modal fade" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="chatModal" aria-hidden="true"  style="background-color: rgba(0,0,0,0.3)">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="chatModalLabel">{{domicilio_seleccionado.nombre}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="min-height: 200px; max-height: 600px; overflow: auto">
+          <ul *ngFor= "let c of chats" class="list-group">
+            <li class="list-group-item">
+                <div class="container recept" *ngIf="c.nombreSender != domicilio_seleccionado.empresa.nombre">
+                    <p>{{c.mensaje}}</p>
+                    <span class="time-right">{{getHoras(c.mensajeTiempo)}}</span>
+                  </div>
+                  <div class="darker" *ngIf="c.nombreSender == domicilio_seleccionado.empresa.nombre">
+                      <p>{{c.mensaje}}</p>
+                      <span class="time-left">{{getHoras(c.mensajeTiempo)}}</span>
+                    </div>
+            </li>
+          </ul>
+        </div>
+        <div class="modal-footer">
+                <div class="input-group">
+              <input type="text" name="message" placeholder="Escribe un mensaje" class="form-control" id="simple-chat-message" [(ngModel)] = "mensaje_chat">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-primary btn-flat" id="message-send" (click) = "enviarMensaje(domicilio_seleccionado, mensaje_chat)">enviar</button>
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ FIN MODAL CHAT ****************************************************************************-->
+          </div>
+    <div class="col">
+        <div class="titulos"> Mapa {{ciudad}} </div> 
+        <div class= "container shadow" #gmap id= "gmap" style="width: 100%; height:30em; border-radius: 10px; margin-top: 15px; position: relative; z-index:1;"></div>
+    </div>
+  </div>
+</div>
+
+  <div class="card shadow-sm" style="width: 15rem; margin: 5px; visibility: hidden;" #calcular_viaje>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <span style="float: left; color: rgba(0, 0, 0, 0.582); font-family: bariol_bold; font-size: 16px">Distancia: </span>
+        <span style="float: right; color: rgba(0, 0, 0, 0.582); font-family: bariol_bold; font-size: 14px" #dist>0 km </span>
+      </li>
+      <li class="list-group-item">
+        <span style="float: left; color: rgba(0, 0, 0, 0.582); font-family: bariol_bold; font-size: 16px">Valor aproximado: </span>
+        <span style="float: right; color: rgba(0, 0, 0, 0.582); font-family: bariol_bold; font-size: 14px" #valor>$ 0 </span>
+      </li>
+    </ul>
+  </div>
+  <button #milocation (click)= "miUbicacion(tipo_servicio)" class= "btn btn-link" style= "visibility: hidden; height: auto; width: auto;"><img class="rounded-circle shadow" src="../../../../assets/mi_location.png"  style= "width: 35px; height: 35px;"/></button>
+
+ 

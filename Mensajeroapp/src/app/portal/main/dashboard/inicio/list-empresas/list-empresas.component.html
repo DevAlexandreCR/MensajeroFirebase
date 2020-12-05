@@ -1,0 +1,87 @@
+<div class="container-fluid">
+<ul class="list-group-horizontal" id="empresas-list">
+<li class="list-group-item rest"role="tablist" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+    <div class="accordion" id="accordionExample">
+          <img src="../../../../../../assets/rest.png">
+    </div>
+</li>
+<li class="list-group-item rest shadow-sm" data-toggle="collapse" data-target="#collapse2" aria-expanded="true" aria-controls="collapse2">
+    <img src="../../../../../../assets/farmacia.png">
+</li>
+<li class="list-group-item rest" data-toggle="collapse" data-target="#collapse3" aria-expanded="true" aria-controls="collapse3">
+    <img src="../../../../../../assets/licores.png">
+</li>
+<li class="list-group-item rest" data-toggle="collapse" data-target="#collapse4" aria-expanded="true" aria-controls="collapse4">
+    <img src="../../../../../../assets/floristeria.png">
+</li>
+<li class="list-group-item rest" data-toggle="collapse" data-target="#collapse5" aria-expanded="true" aria-controls="collapse5">
+    <img src="../../../../../../assets/mercado.png">
+</li>
+</ul>
+<hr>
+<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+<ul class="list-group list-group-horizontal" *ngFor= "let rest of restaurantes">
+    <li class="media" [routerLink]="['../ver-empresa', rest.id_usuario]" >
+          <img [src]= "rest.url_foto_perfil" class="mr-3" alt="..." width="64px;">
+          <div class="media-body">
+            <h5 class="mt-0 mb-1">{{rest.nombre}}</h5>
+            <p class="ellipsis">{{rest.descripcion}}</p>
+          </div>
+    </li>
+  </ul>
+  <hr>
+</div>
+<div id="collapse2" class="collapse" aria-labelledby="heading2" data-parent="#accordionExample">
+<ul class="list-group list-group-horizontal" *ngFor= "let rest of farmacias">
+    <li class="media" [routerLink]="['../ver-empresa', rest.id_usuario]" >
+      <img [src]= "rest.url_foto_perfil" class="mr-3" alt="..." width="64px;">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">{{rest.nombre}}</h5>
+        <p class="ellipsis">{{rest.descripcion}}</p>
+      </div>
+</li>
+  </ul>
+  <hr>
+</div>
+<div id="collapse3" class="collapse" aria-labelledby="heading3" data-parent="#accordionExample">
+<ul class="list-group list-group-horizontal" *ngFor= "let rest of licores">
+    <li class="media" [routerLink]="['../ver-empresa', rest.id_usuario]" >
+      <img [src]= "rest.url_foto_perfil" class="mr-3" alt="..." width="64px;">
+      <div class="media-body">
+        <h5 class="mt-0 mb-1">{{rest.nombre}}</h5>
+        <p class="ellipsis">{{rest.descripcion}}</p>
+      </div>
+</li>
+  </ul>
+  <hr>
+</div>
+<div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#accordionExample">
+  <ul class="list-group list-group-horizontal" *ngFor= "let rest of supermercados">
+      <li class="media" [routerLink]="['../ver-empresa', rest.id_usuario]" >
+        <img [src]= "rest.url_foto_perfil" class="mr-3" alt="..." width="64px;">
+        <div class="media-body">
+          <h5 class="mt-0 mb-1">{{rest.nombre}}</h5>
+          <p class="ellipsis">{{rest.descripcion}}</p>
+        </div>
+  </li>
+    </ul>
+    <hr>
+</div>
+<div id="collapse5" class="collapse" aria-labelledby="heading5" data-parent="#accordionExample">
+    <ul class="list-group list-group-horizontal" *ngFor= "let rest of floristerias">
+        <li class="media" [routerLink]="['../ver-empresa', rest.id_usuario]" >
+          <img [src]= "rest.url_foto_perfil" class="mr-3" alt="...">
+          <div class="media-body">
+            <h5 class="mt-0 mb-1">{{rest.nombre}}</h5>
+            <p class="ellipsis">{{rest.descripcion}}</p>
+          </div>
+    </li>
+      </ul>
+      <hr>
+</div>
+</div>
+
+
+
+
+

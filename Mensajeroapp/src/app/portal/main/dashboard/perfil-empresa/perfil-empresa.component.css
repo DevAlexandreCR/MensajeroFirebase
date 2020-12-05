@@ -1,0 +1,65 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../../../assets/bariol_bold.otf) format("opentype"); 
+}
+
+.img {
+    height: 100%;
+    position: relative;
+    bottom: -50%;
+}
+
+.div-imagen {
+    height: 13vh;
+}
+.div-banner-portada {
+    height: 12vh;
+}
+
+.portada {
+    height: 25vh;
+    width: 100wh;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+}
+
+.img-perfil {
+    height: 20vh;
+}
+
+#cuerpo-perfil {
+    text-align: center
+}
+
+.jumbotron {
+    background-color: white;
+}
+
+.formulario {
+    width: 30vw;
+}
+
+.input-group-text {
+    width: 10vw
+}
+
+.guardar_perfil {
+    width: 100%;
+}´
+
+.container {
+    height: 100%;
+    margin-bottom: 2%;
+}
+
+.imagen_carta{
+    width: 100%;
+}
+
+.imagen_carta:hover{
+    cursor: pointer;
+}
+

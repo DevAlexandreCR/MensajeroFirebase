@@ -1,0 +1,24 @@
+{
+  "name": "administracionmensajero",
+  "version": "0.0.1",
+  "description": "ServidorFirebase",
+  "author": "devalexandrecr@gmail.com",
+  "dependencies": {
+    "@angular-devkit/build-angular": "^0.800.3",
+    "@angular/common": "^8.0.2",
+    "@angular/fire": "^5.2.1",
+    "firebase": "^6.2.1",
+    "hawk": "^7.0.10",
+    "http-build-query": "^0.7.0",
+    "rxjs": "^6.5.2",
+    "rxjs-compat": "^6.3.3"
+  },
+  "main": "main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "admin"
+  ],
+  "license": "ISC"
+}

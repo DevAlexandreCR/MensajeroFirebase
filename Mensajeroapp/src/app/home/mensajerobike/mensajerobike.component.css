@@ -1,0 +1,18 @@
+@font-face{
+    font-family:bariol;
+    src: url(../../../assets/bariol.ttf) format("truetype"); 
+    font-family:bariol_bold;
+    src: url(../../../assets/bariol_bold.otf) format("opentype"); 
+}
+*{
+    font-family:bariol;
+}
+
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    text-align: justify;
+    font-family: bariol;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.603);
+  }
